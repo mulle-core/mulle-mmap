@@ -192,10 +192,10 @@ static inline void   *_mulle_mmap_get_data( struct mulle_mmap *p)
  * `length` is the number of bytes to map. It may be `-1`, in which
  * case a mapping of the entire file is created.
  */
-int    _mulle_mmap_map_range_of_file( struct mulle_mmap *p,
-                                      char *path,
-                                      size_t offset,
-                                      size_t length);
+int    _mulle_mmap_map_file_range( struct mulle_mmap *p,
+                                   char *path,
+                                   size_t offset,
+                                   size_t length);
 
 /**
  * Establishes a memory mapping with AccessMode as was given during init.
@@ -209,10 +209,10 @@ int    _mulle_mmap_map_range_of_file( struct mulle_mmap *p,
  *
  * The entire file is mapped.
  */
-static inline int   _mulle_mmap_file( struct mulle_mmap *p,
-                                      char *path)
+static inline int   _mulle_mmap_map_file( struct mulle_mmap *p,
+                                          char *path)
  {
-     return( _mulle_mmap_map_range_of_file( p, path, 0, (size_t) -1));
+     return( _mulle_mmap_map_file_range( p, path, 0, (size_t) -1));
  }
 
 /**
