@@ -223,10 +223,10 @@ void  _mulle_mmap_done( struct mulle_mmap *p)
 
 
 
-int   _mulle_mmap_map_range_of_file( struct mulle_mmap *p,
-                                     char *path,
-                                     size_t offset,
-                                     size_t length)
+int   _mulle_mmap_map_file_range( struct mulle_mmap *p,
+                                  char *path,
+                                  size_t offset,
+                                  size_t length)
 {
    mulle_mmap_file_t   handle;
    int                rval;
