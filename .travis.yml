@@ -1,50 +1,40 @@
-language: cpp
+language: c
+
+if: NOT tag =~ .*-prerelease$
 
 addons:
-    apt:
-        sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-5.0
-        packages:
-            - g++-6
-            - clang-5.0
+  apt:
+    packages:
+      - cmake
+      - cmake-data
 
-matrix:
-    include:
-        - os: linux
-          env: CXX_COMPILER=g++-6 BUILD_TYPE=Debug
-        - os: linux
-          env: CXX_COMPILER=g++-6 BUILD_TYPE=Release
-        - os: linux
-          env: CXX_COMPILER=clang++-5.0 BUILD_TYPE=Debug
-        - os: linux
-          env: CXX_COMPILER=clang++-5.0 BUILD_TYPE=Release
-        - os: osx
-          osx_image: xcode8.3
-          env: CXX_COMPILER=clang++ BUILD_TYPE=Debug
-        - os: osx
-          osx_image: xcode8.3
-          env: CXX_COMPILER=clang++ BUILD_TYPE=Release
-        - os: linux
-          env: CXX_COMPILER=g++-6 BUILD_TYPE=Debug COVERAGE_FLAGS="--coverage"
+before_install:
+   - '[ ! -f .travis.d/before_install ] || .travis.d/before_install'
+
+# install:
+#    - '[ ! -f .travis.d/install ] || .travis.d/install'
+#
+# before_script:
+#    - '[ ! -f .travis.d/before_script ] || .travis.d/before_script'
+#
 
 script:
-  - mkdir build
-  - cd build
-  - >
-    cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE}             \
-          -DCMAKE_CXX_FLAGS="$COVERAGE_FLAGS"          \
-          -DCMAKE_CXX_COMPILER=${CXX_COMPILER}         \
-          -DCMAKE_VERBOSE_MAKEFILE=ON                  \
-          -DCTEST_DROP_SITE_CDASH=TRUE                 \
-          -DDROP_METHOD="http"                         \
-          -DDROP_SITE="my.cdash.org"                   \
-          -DDROP_LOCATION="/submit.php?project=mio"    \
-          -DBUILDNAME="$(uname -s)-${CXX_COMPILER}-${BUILD_TYPE}" ..
-  - ctest -VV -M Experimental -T Start    \
-    && ctest -VV -M Experimental -T Build \
-    && ctest -VV -M Experimental -T Test
-  - if [[ -n "${COVERAGE_FLAGS+x}" ]]; then ctest -VV -M Experimental -T Coverage; fi
-  - ctest -VV -M Experimental -T Submit
-  
+   - '[ ! -f .travis.d/script ] || .travis.d/script'
 
+# before_cache:
+#    - '[ ! -f .travis.d/before_cache ] || .travis.d/before_cache'
+#
+# after_success:
+#    - '[ ! -f .travis.d/after_success ] || .travis.d/after_success'
+#
+# after_failure:
+#    - '[ ! -f .travis.d/after_failure ] || .travis.d/after_failure'
+#
+# before_deploy:
+#    - '[ ! -f .travis.d/before_deploy ] || .travis.d/before_deploy'
+#
+# after_deploy:
+#    - '[ ! -f .travis.d/after_deploy ] || .travis.d/after_deploy'
+#
+# after_script:
+#    - '[ ! -f .travis.d/after_script ] || .travis.d/after_script'
