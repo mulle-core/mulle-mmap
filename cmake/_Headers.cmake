@@ -15,7 +15,6 @@ src/include-private.h
 
 set( PUBLIC_HEADERS
 src/include.h
-src/mmap.h
 src/mulle-mmap.h
 )
 

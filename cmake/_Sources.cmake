@@ -6,6 +6,5 @@ if( MULLE_TRACE_INCLUDE)
 endif()
 
 set( SOURCES
-src/mmap.c
 src/mulle-mmap.c
 )
