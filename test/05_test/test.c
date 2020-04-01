@@ -22,7 +22,7 @@ void   test_at_offset( enum mulle_mmap_accessmode mode,
 
     // Map the region of the file to which buffer was written.
    _mulle_mmap_init( &info, mode);
-   if( _mulle_mmap_map_range_of_file( &info, filename, offset, -1))
+   if( _mulle_mmap_map_file_range( &info, filename, offset, -1))
       printf( "mmap failed %s\n", strerror( errno));
 
    if( ! _mulle_mmap_is_open( &info))
