@@ -156,7 +156,7 @@ export MULLE_MMAP_URL="https://github.com/mulle-objc-ports/mulle-mmap.git"
 
 
 #
-# mulle-mmap branch: ${MULLE_MMAP_BRANCH}
+# mulle-mmap branch: ${MULLE_MMAP_BRANCH:-latest}
 #
 export MULLE_MMAP_BRANCH="prerelease"
 
