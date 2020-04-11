@@ -14,13 +14,10 @@ Use Objective-C, if you need retain counts.
 
 ## Add 
 
-Use [mulle-sde](//github.com/mulle-sde) to add mulle-sprintf to your project:
+Use [mulle-sde](//github.com/mulle-sde) to add mulle-mmap to your project:
 
 ```
-mulle-sde dependency add --c \
-                         --github mulle-core \
-                         --marks no-link,no-singlephase \
-                         mulle-mmap
+mulle-sde dependency add --c --github mulle-core mulle-mmap
 ```
 
 ## Install
