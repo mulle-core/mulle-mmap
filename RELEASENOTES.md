@@ -1,3 +1,7 @@
+### 0.0.3
+
+* move from travis to github actions, upgrade mulle-sde
+
 ### 0.0.2
 
 * simplify into one header/source
