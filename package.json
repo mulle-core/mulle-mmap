@@ -1,0 +1,15 @@
+{
+   "name" : "mulle-mmap",
+   "version" : "0.0.3",
+   "description" : "🇧🇿 Memory mapped file access",
+   "homepage" : "https://github.com/mulle-core/mulle-mmap",
+   "bugs" : "https://github.com/mulle-core/mulle-mmap/issues",
+   "keywords" : [],
+   "license" : "UNLICENSED",
+   "repository" : {
+      "type" : "git",
+      "url" : "mulle-core/mulle-mmap"
+   },
+   "dependencies" : {
+   }
+}
