@@ -11,15 +11,37 @@ It has no shared pointer functionality.
 Use Objective-C, if you need retain counts.
 
 
-## How to add
+## Add 
 
-mulle-sde dependency add --c \
-                         --github mulle-core \
-                         --marks no-link,no-singlephase \
-                         mulle-mmap
+Use [mulle-sde](//github.com/mulle-sde) to add mulle-mmap to your project:
 
-## How to build
+```
+mulle-sde dependency add --c --github mulle-core mulle-mmap
+```
 
-This is a [mulle-sde](https://mulle-sde.github.io/) project.
+## Install
 
-To build it use `mulle-sde craft`.
+### mulle-sde
+
+Use [mulle-sde](//github.com/mulle-sde) to build and install mulle-mmap and all dependencies:
+
+```
+mulle-sde install --prefix /usr/local \
+   https://github.com/mulle-core/mulle-mmap/archive/latest.tar.gz
+```
+
+### Manual Installation
+
+Install into `/usr/local`:
+
+```
+mkdir build 2> /dev/null
+(
+   cd build ;
+   cmake -DCMAKE_INSTALL_PREFIX=/usr/local \
+         -DCMAKE_PREFIX_PATH=/usr/local \
+         -DCMAKE_BUILD_TYPE=Release .. ;
+   make install
+)
+```
+
