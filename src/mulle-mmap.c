@@ -117,7 +117,7 @@ static mulle_mmap_file_t   mulle_mmap_file_open( char *path,
 
 #ifdef _WIN32
    handle = CreateFileA( path,
-                         mode == mulle_mmap_read ? GENERIC_READ : GENERIC_READ | GENERIC_WRITE,
+                         mode == mulle_mmap_read ? GENERIC_READ : (GENERIC_READ | GENERIC_WRITE),
                          FILE_SHARE_READ | FILE_SHARE_WRITE,
                          0,
                          OPEN_EXISTING,
@@ -125,7 +125,7 @@ static mulle_mmap_file_t   mulle_mmap_file_open( char *path,
                          0);
 
 #else // POSIX
-    handle = open( path, mulle_mmap_read ? O_RDONLY : O_RDWR);
+    handle = open( path, mode == mulle_mmap_read ? O_RDONLY : O_RDWR);
 #endif
     return( handle);
 }

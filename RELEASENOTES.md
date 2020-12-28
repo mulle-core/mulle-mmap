@@ -1,6 +1,7 @@
 ### 0.0.3
 
 * move from travis to github actions, upgrade mulle-sde
+* fix files being opened O_RDONLY only on posix
 
 ### 0.0.2
 
