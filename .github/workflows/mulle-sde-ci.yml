@@ -13,6 +13,12 @@ jobs:
         os: [ macos-latest, ubuntu-latest]
 
     steps:
+    - name: Update stuff (for act)
+      run: apt-get update
+
+    - name: Install stuff (for act)
+      run: apt-get -y install cmake curl uuid-runtime
+
     - name: Set MULLE_HOSTNAME
       run: |
         name="${GITHUB_REF##*/}"

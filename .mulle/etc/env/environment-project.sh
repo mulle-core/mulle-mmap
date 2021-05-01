@@ -7,19 +7,19 @@ export PROJECT_NAME="mulle-mmap"
 #
 #
 #
-export PROJECT_IDENTIFIER="mulle_mmap"
 
-
-#
-#
-#
-export PROJECT_DOWNCASE_IDENTIFIER="mulle_mmap"
 
 
 #
 #
 #
-export PROJECT_UPCASE_IDENTIFIER="MULLE_MMAP"
+
+
+
+#
+#
+#
+
 
 
 #
