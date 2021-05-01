@@ -31,7 +31,7 @@
 #include <string.h>
 
 
-#define MULLE_MMAP_VERSION  ((0 << 20) | (0 << 8) | 3)
+#define MULLE_MMAP_VERSION  ((0 << 20) | (1 << 8) | 0)
 
 
 static inline unsigned int   mulle_mmap_get_version_major( void)
@@ -140,6 +140,18 @@ static inline mulle_mmap_file_t
    return( p->file_mapping_handle_);
 }
 #endif
+
+
+/*
+ * A little additional interface to just get pages from the OS.
+ */
+//
+// size should probably be a multiple of pagesize. It is known that the
+// returned pages are zero filled!
+//
+void   *mulle_mmap_alloc_pages( size_t size);
+// free with this
+int     mulle_mmap_free_pages( void *p, size_t size);
 
 
     /** Returns whether a valid memory mapping has been created. */
@@ -275,8 +287,8 @@ int    _mulle_mmap_map_range( struct mulle_mmap *p,
  *
  * The entire file is mapped.
  */
-static inline int    _mulle_mmap_map( struct mulle_mmap *p,
-                                      mulle_mmap_file_t handle)
+static inline int  _mulle_mmap_map( struct mulle_mmap *p,
+                                    mulle_mmap_file_t handle)
 {
    return( _mulle_mmap_map_range( p, handle, 0, (size_t) -1));
 }
@@ -304,7 +316,8 @@ int   _mulle_mmap_conditional_sync( struct mulle_mmap *p);
 
 
 
-static inline int   mulle_mmap_equal( struct mulle_mmap *p, struct mulle_mmap *q)
+static inline int   mulle_mmap_equal( struct mulle_mmap *p,
+                                      struct mulle_mmap *q)
 {
    return( p->accessmode_ == q->accessmode_ &&
            p->data_ == q->data_ &&
@@ -313,6 +326,5 @@ static inline int   mulle_mmap_equal( struct mulle_mmap *p, struct mulle_mmap *q
 
 
 size_t  mulle_mmap_get_system_pagesize( void);
-
 
 #endif

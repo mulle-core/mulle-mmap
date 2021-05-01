@@ -393,3 +393,21 @@ int   _mulle_mmap_conditional_sync( struct mulle_mmap *p)
    return( _mulle_mmap_sync( p));
 }
 
+
+void   *mulle_mmap_alloc_pages( size_t size)
+{
+   void  *p;
+
+   p = mmap( 0, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+   return( p);
+}
+
+
+
+int   mulle_mmap_free_pages( void *p, size_t size)
+{
+   int   rval;
+
+   rval = munmap( p, size);
+   return( rval);
+}
