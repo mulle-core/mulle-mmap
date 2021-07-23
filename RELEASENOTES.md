@@ -1,3 +1,8 @@
+## 0.1.0
+
+* ``mulle_mmap_alloc_pages`` and ``mulle_mmap_free_pages`` added
+
+
 ### 0.0.3
 
 * move from travis to github actions, upgrade mulle-sde
