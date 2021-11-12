@@ -25,6 +25,7 @@
 
 #ifdef _WIN32
 # include <windows.h>
+# include <stdlib.h>
 #else
 # include <unistd.h>
 # include <fcntl.h>
@@ -169,14 +170,14 @@ static int   memory_map( mulle_mmap_file_t handle,
 {
     int64_t   aligned_offset;
     int64_t   length_to_map;
-    char       *mapping_start;
+    char      *mapping_start;
 
-    aligned_offset = mulle_mmap_pagealign_offset( offset);
+    aligned_offset = mulle_mmap_pagealign_offset( (size_t) offset);
     length_to_map  = offset - aligned_offset + length;
 
 #ifdef _WIN32
    {
-       int64_t            max_file_size;
+       int64_t             max_file_size;
        mulle_mmap_file_t   file_mapping_handle;
 
        max_file_size = offset + length;
@@ -184,8 +185,8 @@ static int   memory_map( mulle_mmap_file_t handle,
                handle,
                0,
                mode == mulle_mmap_read ? PAGE_READONLY : PAGE_READWRITE,
-               mulle_mmap_int64_high( max_file_size),
-               mulle_mmap_int64_low( max_file_size),
+               (SIZE_T) mulle_mmap_int64_high( max_file_size),
+               (SIZE_T) mulle_mmap_int64_low( max_file_size),
                0);
        if( file_mapping_handle == MULLE_MMAP_INVALID_HANDLE)
          return( -1);
@@ -193,10 +194,10 @@ static int   memory_map( mulle_mmap_file_t handle,
        mapping_start = (char *) MapViewOfFile(
                file_mapping_handle,
                mode == mulle_mmap_read ? FILE_MAP_READ : FILE_MAP_WRITE,
-               mulle_mmap_int64_high( aligned_offset),
-               mulle_mmap_int64_low( aligned_offset),
+               (SIZE_T) mulle_mmap_int64_high( aligned_offset),
+               (SIZE_T) mulle_mmap_int64_low( aligned_offset),
                length_to_map);
-       if( mapping_start == nullptr)
+       if( mapping_start == NULL)
          return( 1);
        ctx->file_mapping_handle = file_mapping_handle;
    }
@@ -294,8 +295,8 @@ int    _mulle_mmap_map_range( struct mulle_mmap *p,
         p->file_handle_         = handle;
         p->is_handle_internal_  = 0;
         p->data_                = ctx.data;
-        p->length_              = ctx.length;
-        p->mapped_length_       = ctx.mapped_length;
+        p->length_              = (size_t) ctx.length;
+        p->mapped_length_       = (size_t) ctx.mapped_length;
 #ifdef _WIN32
         p->file_mapping_handle_ = ctx.file_mapping_handle;
 #endif
@@ -398,7 +399,11 @@ void   *mulle_mmap_alloc_pages( size_t size)
 {
    void  *p;
 
+#ifdef _WIN32
+   p = malloc( size);
+#else   
    p = mmap( 0, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+#endif   
    return( p);
 }
 
@@ -408,6 +413,11 @@ int   mulle_mmap_free_pages( void *p, size_t size)
 {
    int   rval;
 
+#ifdef _WIN32
+   free( p);
+   rval = 0;
+#else   
    rval = munmap( p, size);
+#endif   
    return( rval);
 }
