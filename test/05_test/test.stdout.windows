@@ -1,0 +1,9 @@
+R "test-file.dat" offset=0 : OK
+R "test-file.dat" offset=65533 : OK
+R "test-file.dat" offset=65539 : OK
+R "test-file.dat" offset=131075 : OK
+
+RW "test-file.dat" offset=0 : OK
+RW "test-file.dat" offset=65533 : OK
+RW "test-file.dat" offset=65539 : OK
+RW "test-file.dat" offset=131075 : OK
