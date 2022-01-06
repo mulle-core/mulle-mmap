@@ -14,6 +14,16 @@
 #ifndef _mulle_mmap_include_h__
 #define _mulle_mmap_include_h__
 
-/* no headers */
+// You can tweak the following #include with these commands.
+// (Use 360388C4-28A5-43B9-B5DE-858CE8E4A9BA instead of mulle-c11 if there are duplicate entries)
+//    remove:             `mulle-sde dependency mark mulle-c11 no-header`
+//    rename:             `mulle-sde dependency|library set mulle-c11 include whatever.h`
+//    reorder:            `mulle-sde dependency move mulle-c11 <up|down>`
+//    toggle #include:    `mulle-sde dependency mark mulle-c11 [no-]import`
+//    toggle public:      `mulle-sde dependency mark mulle-c11 [no-]public`
+//    toggle optional:    `mulle-sde dependency mark mulle-c11 [no-]require`
+//    remove for platform:`mulle-sde dependency mark mulle-c11 no-platform-<uname>`
+//        (use `mulle-sourcetree-to-c --unames` to list known values)
+#include <mulle-c11/mulle-c11.h>   // mulle-c11
 
 #endif
