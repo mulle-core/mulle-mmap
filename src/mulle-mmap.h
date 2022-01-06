@@ -32,7 +32,7 @@
 #include <string.h>
 
 
-#define MULLE_MMAP_VERSION  ((0 << 20) | (1 << 8) | 0)
+#define MULLE_MMAP_VERSION  ((0 << 20) | (1 << 8) | 1)
 
 
 static inline unsigned int   mulle_mmap_get_version_major( void)
@@ -339,5 +339,12 @@ static inline int   mulle_mmap_equal( struct mulle_mmap *p,
 
 MULLE_MMAP_EXTERN_GLOBAL
 size_t  mulle_mmap_get_system_pagesize( void);
+
+
+#ifdef __has_include
+# if __has_include( "_mulle-mmap-versioncheck.h")
+#  include "_mulle-mmap-versioncheck.h"
+# endif
+#endif
 
 #endif

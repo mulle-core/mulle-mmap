@@ -11,6 +11,11 @@ It has no shared pointer functionality.
 Use Objective-C, if you need retain counts.
 
 
+### You are here
+
+![Overview](overview.dot.svg)
+
+
 ## Add 
 
 Use [mulle-sde](//github.com/mulle-sde) to add mulle-mmap to your project:

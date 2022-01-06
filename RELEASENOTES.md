@@ -1,3 +1,7 @@
+### 0.1.1
+
+* Various small improvements
+
 ## 0.1.0
 
 * ``mulle_mmap_alloc_pages`` and ``mulle_mmap_free_pages`` added
