@@ -89,6 +89,8 @@ int main()
          printf( "\n");
    }
 
+   free( buffer);
+
    return( 0);
 }
 
