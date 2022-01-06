@@ -5,7 +5,8 @@ export MULLE_MATCH_FIND_NAMES="*.args,*.stdout,*.stdin,*.stderr,*.errors,*.ccdia
 
 
 #
-# Make project to test discoverable via MULLE_FETCH_SEARCH_PATH We assume we are in ${PROJECT_DIR}/test so modify search path to add ../..
+# Make project to test discoverable via MULLE_FETCH_SEARCH_PATH
+# We assume we are in ${PROJECT_DIR}/test so modify search path to add ../..
 #
 export MULLE_FETCH_SEARCH_PATH="${MULLE_FETCH_SEARCH_PATH}:${MULLE_VIRTUAL_ROOT}/../.."
 
