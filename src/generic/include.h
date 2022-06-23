@@ -29,8 +29,14 @@
 
 #include "_mulle-mmap-include.h"
 
-#ifndef MULLE_MMAP_EXTERN_GLOBAL
-# define MULLE_MMAP_EXTERN_GLOBAL MULLE_C_EXTERN_GLOBAL
+#ifdef MULLE_MMAP_BUILD
+# define MULLE_MMAP_GLOBAL    MULLE_C_GLOBAL
+#else
+# if defined( MULLE_MMAP_INCLUDE_DYNAMIC) || (defined( MULLE_INCLUDE_DYNAMIC) && ! defined( MULLE_MMAP_INCLUDE_STATIC))
+#  define MULLE_MMAP_GLOBAL   MULLE_C_EXTERN_GLOBAL
+# else
+#  define MULLE_MMAP_GLOBAL   extern
+# endif
 #endif
 
 
