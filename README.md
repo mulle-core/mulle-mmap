@@ -4,7 +4,7 @@
 
 An easy to use cross-platform C memory mapping library with a MIT license.
 
-This is based on [https://github.com/mandreyel/mio](), which is a C++ header
+This is based on [//github.com/mandreyel/mio](), which is a C++ header
 only library. This library uses traditional `.h`/`.c` separation.
 It has no shared pointer functionality.
 
@@ -32,7 +32,7 @@ Use [mulle-sde](//github.com/mulle-sde) to build and install mulle-mmap and all 
 
 ```
 mulle-sde install --prefix /usr/local \
-   https://github.com/mulle-core/mulle-mmap/archive/latest.tar.gz
+   //github.com/mulle-core/mulle-mmap/archive/latest.tar.gz
 ```
 
 ### Manual Installation
