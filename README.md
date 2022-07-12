@@ -20,7 +20,7 @@ Use Objective-C, if you need retain counts.
 
 Use [mulle-sde](//github.com/mulle-sde) to add mulle-mmap to your project:
 
-```
+``` sh
 mulle-sde dependency add --c --github mulle-core mulle-mmap
 ```
 
@@ -30,7 +30,7 @@ mulle-sde dependency add --c --github mulle-core mulle-mmap
 
 Use [mulle-sde](//github.com/mulle-sde) to build and install mulle-mmap and all dependencies:
 
-```
+``` sh
 mulle-sde install --prefix /usr/local \
    //github.com/mulle-core/mulle-mmap/archive/latest.tar.gz
 ```
@@ -39,7 +39,7 @@ mulle-sde install --prefix /usr/local \
 
 Install into `/usr/local`:
 
-```
+``` sh
 mkdir build 2> /dev/null
 (
    cd build ;
