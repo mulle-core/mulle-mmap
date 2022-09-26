@@ -184,7 +184,8 @@ static int   memory_map( mulle_mmap_file_t handle,
        file_mapping_handle = CreateFileMapping(
                handle,
                0,
-               mode == mulle_mmap_read ? PAGE_READONLY : PAGE_READWRITE,
+               SEC_RESERVE | /* added https://devblogs.microsoft.com/oldnewthing/20150130-00/?p=44793) */
+                  (mode == mulle_mmap_read ? PAGE_READONLY : PAGE_READWRITE),
                (SIZE_T) mulle_mmap_int64_high( max_file_size),
                (SIZE_T) mulle_mmap_int64_low( max_file_size),
                0);
@@ -400,7 +401,7 @@ void   *mulle_mmap_alloc_pages( size_t size)
    void  *p;
 
 #ifdef _WIN32
-   p = malloc( size);
+   VirtualAlloc( &p, size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 #else   
    p = mmap( 0, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
 #endif   
@@ -408,14 +409,28 @@ void   *mulle_mmap_alloc_pages( size_t size)
 }
 
 
+void   *mulle_mmap_alloc_shared_pages( size_t size)
+{
+   void  *p;
+
+// TODO: use CreateFileMapping and VirtualAlloc
+// Creating a shared memory block that can grow in size:
+// https://devblogs.microsoft.com/oldnewthing/20150130-00/?p=44793
+#ifdef _WIN32
+   abort();
+#else
+   p = mmap( 0, size, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1, 0);
+#endif
+   return( p);
+}
+
 
 int   mulle_mmap_free_pages( void *p, size_t size)
 {
    int   rval;
 
 #ifdef _WIN32
-   free( p);
-   rval = 0;
+   rval = ! VirtualFree( p, size, MEM_RELEASE);
 #else   
    rval = munmap( p, size);
 #endif   
