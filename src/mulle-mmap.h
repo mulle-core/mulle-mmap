@@ -160,6 +160,12 @@ MULLE_MMAP_GLOBAL
 int     mulle_mmap_free_pages( void *p, size_t size);
 
 
+/* like mulle_mmap_alloc_pages but produces shared memory pages instead
+ * https://stackoverflow.com/questions/5656530/how-to-use-shared-memory-with-linux-in-c
+ */
+MULLE_MMAP_GLOBAL
+void   *mulle_mmap_alloc_shared_pages( size_t size);
+
     /** Returns whether a valid memory mapping has been created. */
 static inline int   _mulle_mmap_is_open( struct mulle_mmap *p)
 {
