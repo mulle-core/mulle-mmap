@@ -29,72 +29,33 @@
 #   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 #   POSSIBILITY OF SUCH DAMAGE.
 #
-
-#
-# Overwrite inherited task and add mulle-mulle-sourcetree-to-c.
-# It would be nice to inherit this properly instead of clobbering it.
-# Also mulle-sourcetree-to-c doesn't really require cmake to exist, this
-# is another bug.
-#
-sourcetree_task_run()
+craft_task_run()
 {
-   log_entry "mulle-sde/c-cmake::sourcetree_task_run" "$@"
+   log_entry "mulle-sde/sde:: craft_task_run" "$@"
 
-   local runs
+   log_fluff "==> Craft"
 
-   case "${MULLE_SOURCETREE_TO_CMAKE_RUN}" in
-      NO|DISABLE*|OFF)
-      ;;
-
-      *)
-         runs="cmake"
-      ;;
-   esac
-
-   case "${MULLE_SOURCETREE_TO_C_RUN}" in
-      NO|DISABLE*|OFF)
-      ;;
-
-      *)
-         r_comma_concat "${runs}" "c"
-         runs="${RVAL}"
-      ;;
-   esac
-
-   if [ -z "${runs}" ]
+   #
+   # remove running test jobs, as they are invalid now
+   # but only if we restart them
+   #
+   if [ "${MULLE_SDE_TEST_AFTER_CRAFT}" = 'YES' ]
    then
-      return
+      monitor::task::remove_job "test"
    fi
 
-   log_info "Reflecting ${C_MAGENTA}${C_BOLD}${PROJECT_NAME:-.}${C_INFO} sourcetree ${C_RESET_BOLD}${MULLE_SOURCETREE_CONFIG_NAME:-config}"
+   if ! eval_exekutor mulle-sde "${MULLE_TECHNICAL_FLAGS}" \
+                                "${MULLE_CRAFT_TASK_FLAGS}" \
+                        craft "$@" \
+                           "${MULLE_CRAFT_TASK_ARGS}"
+   then
+      return 1
+   fi
 
-   local rval
-
-   rval=0
-   case ",${runs}," in
-      *,cmake,*)
-         exekutor mulle-sourcetree-to-cmake ${MULLE_TECHNICAL_FLAGS} "$@"
-         rval=$?
-         if [ $rval -ne 0 ]
-         then
-            log_error "mulle-sourcetree-to-cmake ${MULLE_TECHNICAL_FLAGS} $* failed ($rval)"
-         fi
-      ;;
-   esac
-
-   local rval2
-
-   rval2=0
-   case ",${runs}," in
-      *,c,*)
-         exekutor mulle-sourcetree-to-c ${MULLE_TECHNICAL_FLAGS} "$@"
-         rval2=$?
-         if [ $rval2 -ne 0 ]
-         then
-            log_error "mulle-sourcetree-to-c ${MULLE_TECHNICAL_FLAGS} $* failed ($rval2)"
-         fi
-      ;;
-   esac
-
-   [ $rval -eq 0 -a $rval2 -eq 0 ]
+   if [ "${MULLE_SDE_TEST_AFTER_CRAFT}" = 'YES' ]
+   then
+      monitor::task::run "test"
+   fi
 }
+
+

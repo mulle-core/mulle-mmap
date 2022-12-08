@@ -1,0 +1,12 @@
+mulle-cmake-graphviz-include;optional
+mulle-create-build-motd;optional
+git;optional
+gzip;optional
+id;optional
+inotifywait;optional
+ssh;optional
+tar;optional
+tty;optional
+zip;optional
+xz;optional
+bzip2;optional

@@ -404,6 +404,8 @@ void   *mulle_mmap_alloc_pages( size_t size)
    VirtualAlloc( &p, size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 #else   
    p = mmap( 0, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+   if( p == MAP_FAILED)
+      return( NULL);
 #endif   
    return( p);
 }
@@ -420,6 +422,8 @@ void   *mulle_mmap_alloc_shared_pages( size_t size)
    abort();
 #else
    p = mmap( 0, size, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1, 0);
+   if( p == MAP_FAILED)
+      return( NULL);
 #endif
    return( p);
 }
