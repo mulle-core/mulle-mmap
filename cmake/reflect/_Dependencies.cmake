@@ -15,6 +15,7 @@ endif()
 # Generated from sourcetree: 360388C4-28A5-43B9-B5DE-858CE8E4A9BA;mulle-c11;no-all-load,no-cmake-inherit,no-import,no-link,no-recurse,no-singlephase;
 # Disable with : `mulle-sourcetree mark mulle-c11 no-header`
 # Disable for this platform: `mulle-sourcetree mark mulle-c11 no-cmake-platform-${MULLE_UNAME}`
+# Disable for a sdk: `mulle-sourcetree mark mulle-c11 no-cmake-sdk-<name>`
 #
 if( NOT MULLE_C11_HEADER)
    find_file( MULLE_C11_HEADER NAMES mulle-c11.h mulle-c11/mulle-c11.h)
