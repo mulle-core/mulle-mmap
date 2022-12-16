@@ -1,6 +1,6 @@
 {
    "name" : "mulle-mmap",
-   "version" : "0.0.3",
+   "version" : "0.2.0",
    "description" : "🇧🇿 Memory mapped file access",
    "homepage" : "https://github.com/mulle-core/mulle-mmap",
    "bugs" : "https://github.com/mulle-core/mulle-mmap/issues",
@@ -11,5 +11,6 @@
       "url" : "mulle-core/mulle-mmap"
    },
    "dependencies" : {
+      "mulle-c11" : "git://github.com/mulle-c/mulle-c11"
    }
 }
