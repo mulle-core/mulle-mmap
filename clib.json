@@ -1,0 +1,20 @@
+{
+   "name" : "mulle-mmap",
+   "version" : "0.2.0",
+   "description" : "Memory mapped file access",
+   "keywords" : [],
+   "license" : "BSD-3-Clause",
+   "repo" : "mulle-core/mulle-mmap",
+   "src" : [
+      "src/generic/include-private.h",
+      "src/generic/include.h",
+      "src/mulle-mmap.c",
+      "src/mulle-mmap.h",
+      "src/reflect/_mulle-mmap-include-private.h",
+      "src/reflect/_mulle-mmap-include.h",
+      "src/reflect/_mulle-mmap-versioncheck.h"
+   ],
+   "dependencies" : {
+      "mulle-c/mulle-c11": "*"
+   }
+}
