@@ -175,6 +175,15 @@ static int   memory_map( mulle_mmap_file_t handle,
     aligned_offset = mulle_mmap_pagealign_offset( (size_t) offset);
     length_to_map  = offset - aligned_offset + length;
 
+    // (nat) NSData otherwise has problems with 0 byte files
+    if( ! length_to_map)
+    {
+        ctx->data          = 0;
+        ctx->length        = 0;
+        ctx->mapped_length = 0;
+        return( 0);
+    }      
+
 #ifdef _WIN32
    {
        int64_t             max_file_size;

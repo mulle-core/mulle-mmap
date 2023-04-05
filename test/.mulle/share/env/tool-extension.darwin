@@ -1,2 +1,2 @@
 inotifywait;remove
-fswatch;optional
+fswatch
