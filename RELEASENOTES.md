@@ -1,3 +1,8 @@
+### 0.2.1
+
+* remove package.json as it conflicts with clib.json
+* fix for zero byte files
+
 ## 0.2.0
 
 * use VirtualAlloc to allocate shared memory
