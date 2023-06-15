@@ -38,7 +38,7 @@
 
 uint32_t   mulle_mmap_get_version( void)
 {
-   return( MULLE_MMAP_VERSION);
+   return( MULLE__MMAP_VERSION);
 }
 
 
