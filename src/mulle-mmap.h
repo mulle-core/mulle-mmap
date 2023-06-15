@@ -32,28 +32,28 @@
 #include <string.h>
 
 
-#define MULLE_MMAP_VERSION  ((0 << 20) | (2 << 8) | 1)
+#define MULLE__MMAP_VERSION  ((0 << 20) | (2 << 8) | 1)
 
 
 static inline unsigned int   mulle_mmap_get_version_major( void)
 {
-   return( MULLE_MMAP_VERSION >> 20);
+   return( MULLE__MMAP_VERSION >> 20);
 }
 
 
 static inline unsigned int   mulle_mmap_get_version_minor( void)
 {
-   return( (MULLE_MMAP_VERSION >> 8) & 0xFFF);
+   return( (MULLE__MMAP_VERSION >> 8) & 0xFFF);
 }
 
 
 static inline unsigned int   mulle_mmap_get_version_patch( void)
 {
-   return( MULLE_MMAP_VERSION & 0xFF);
+   return( MULLE__MMAP_VERSION & 0xFF);
 }
 
 
-MULLE_MMAP_GLOBAL
+MULLE__MMAP_GLOBAL
 uint32_t   mulle_mmap_get_version( void);
 
 
@@ -121,7 +121,7 @@ static inline void   _mulle_mmap_init( struct mulle_mmap *p,
 * If this is a read-write mapping, the destructor invokes sync. Regardless
 * of the access mode, unmap is invoked as a final step.
 */
-MULLE_MMAP_GLOBAL
+MULLE__MMAP_GLOBAL
 void   _mulle_mmap_done( struct mulle_mmap *p);
 
 /**
@@ -152,18 +152,18 @@ static inline mulle_mmap_file_t
 // size should probably be a multiple of pagesize. It is known that the
 // returned pages are zero filled!
 //
-MULLE_MMAP_GLOBAL
+MULLE__MMAP_GLOBAL
 void   *mulle_mmap_alloc_pages( size_t size);
 // free with this
 
-MULLE_MMAP_GLOBAL
+MULLE__MMAP_GLOBAL
 int     mulle_mmap_free_pages( void *p, size_t size);
 
 
 /* like mulle_mmap_alloc_pages but produces shared memory pages instead
  * https://stackoverflow.com/questions/5656530/how-to-use-shared-memory-with-linux-in-c
  */
-MULLE_MMAP_GLOBAL
+MULLE__MMAP_GLOBAL
 void   *mulle_mmap_alloc_shared_pages( size_t size);
 
     /** Returns whether a valid memory mapping has been created. */
@@ -189,7 +189,7 @@ static inline int   _mulle_mmap_is_writable( struct mulle_mmap *p)
 }
 
 
-MULLE_MMAP_GLOBAL
+MULLE__MMAP_GLOBAL
 int   _mulle_mmap_is_mapped( struct mulle_mmap *p);
 
 /**
@@ -242,7 +242,7 @@ static inline void   *_mulle_mmap_get_data( struct mulle_mmap *p)
  * `length` is the number of bytes to map. It may be `-1`, in which
  * case a mapping of the entire file is created.
  */
-MULLE_MMAP_GLOBAL
+MULLE__MMAP_GLOBAL
 int    _mulle_mmap_map_file_range( struct mulle_mmap *p,
                                    char *path,
                                    size_t offset,
@@ -285,7 +285,7 @@ static inline int   _mulle_mmap_map_file( struct mulle_mmap *p,
  * `length` is the number of bytes to map. It may be `-1`, in which
  * case a mapping of the entire file is created.
  */
-MULLE_MMAP_GLOBAL
+MULLE__MMAP_GLOBAL
 int    _mulle_mmap_map_range( struct mulle_mmap *p,
                               mulle_mmap_file_t handle,
                               size_t offset,
@@ -317,19 +317,19 @@ static inline int  _mulle_mmap_map( struct mulle_mmap *p,
  * mapping was created using a file path. If, on the other hand, an existing
  * file handle was used to create the mapping, the file handle is not closed.
  */
-MULLE_MMAP_GLOBAL
+MULLE__MMAP_GLOBAL
 int   _mulle_mmap_unmap( struct mulle_mmap *p);
 
 
 /** Flushes the memory mapped page to disk. Errors are reported via `error`. */
-MULLE_MMAP_GLOBAL
+MULLE__MMAP_GLOBAL
 int   _mulle_mmap_sync( struct mulle_mmap *p);
 
 /**
  * The destructor syncs changes to disk if `AccessMode` is `write`, but not
  * if it's `read`.
  */
-MULLE_MMAP_GLOBAL
+MULLE__MMAP_GLOBAL
 int   _mulle_mmap_conditional_sync( struct mulle_mmap *p);
 
 
@@ -343,7 +343,7 @@ static inline int   mulle_mmap_equal( struct mulle_mmap *p,
 }
 
 
-MULLE_MMAP_GLOBAL
+MULLE__MMAP_GLOBAL
 size_t  mulle_mmap_get_system_pagesize( void);
 
 
