@@ -1,2 +1,1 @@
-mulle-testallocator;${MULLE__TESTALLOCATOR_NODETYPE:-tar};no-import,no-singlephase;3770752D-2AD5-4A69-8375-73E9848340EC;${MULLE__TESTALLOCATOR_URL:-https://github.com/mulle-core/mulle-testallocator/archive/${MULLE_TAG}.tar.gz};${MULLE__TESTALLOCATOR_BRANCH};${MULLE__TESTALLOCATOR_TAG:-latest};;
-mulle-mmap;${MULLE__MMAP_NODETYPE:-tar};;9D94C10E-89C2-4DBD-B1BA-81055423EA9E;${MULLE__MMAP_URL:-https://github.com/nat/mulle-mmap/archive/${MULLE_TAG}.tar.gz};${MULLE__MMAP_BRANCH};${MULLE__MMAP_TAG:-latest};;
+mulle-mmap;${MULLE__MMAP_NODETYPE:-tar};;A0C2A7EA-8409-41B2-BB98-E1FDBE9C127C;${MULLE__MMAP_URL:-https://github.com/nat/mulle-mmap/archive/${MULLE_TAG}.tar.gz};${MULLE__MMAP_BRANCH};${MULLE__MMAP_TAG:-latest};;

@@ -29,7 +29,11 @@
 #else
 # include <unistd.h>
 # include <fcntl.h>
-# include <sys/mman.h>
+# if defined( __COSMOPOLITAN__) || defined( __MULLE_COSMOPOLITAN__)
+#  include <cosmopolitan/cosmopolitan.h>
+# else
+#  include <sys/mman.h>  // issue this?
+# endif
 # include <sys/stat.h>
 #endif
 
