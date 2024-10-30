@@ -25,7 +25,7 @@ export MULLE_MATCH_IGNORE_PATH=""
 #
 # These are used by mulle-match find to speed up the search.
 #
-export MULLE_MATCH_FIND_NAMES="*.args,*.stdout,*.stdin,*.stderr,*.errors,*.ccdiag"
+export MULLE_MATCH_FIND_NAMES="*.environment,*.args,*.stdout,*.stdin,*.stderr,*.errors,*.ccdiag"
 
 
 #
