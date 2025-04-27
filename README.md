@@ -14,9 +14,9 @@ Use Objective-C, if you need retain counts.
 
 
 
-| Release Version                                       | Release Notes
-|-------------------------------------------------------|--------------
-| ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-core/mulle-mmap.svg) [![Build Status](https://github.com/mulle-core/mulle-mmap/workflows/CI/badge.svg)](//github.com/mulle-core/mulle-mmap/actions) | [RELEASENOTES](RELEASENOTES.md) |
+| Release Version                                       | Release Notes  | AI Documentation
+|-------------------------------------------------------|----------------|---------------
+| ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-core/mulle-mmap.svg) [![Build Status](https://github.com/mulle-core/mulle-mmap/workflows/CI/badge.svg)](//github.com/mulle-core/mulle-mmap/actions) | [RELEASENOTES](RELEASENOTES.md) | [DeepWiki for mulle-mmap](https://deepwiki.com/mulle-core/mulle-mmap)
 
 
 
