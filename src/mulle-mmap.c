@@ -283,7 +283,7 @@ int    _mulle_mmap_map_range( struct mulle_mmap *p,
      * already again
      */
 
-    if( length != (size_t) -1 && offset + length > file_size)
+    if( length != (size_t) -1 && (offset + length) > (size_t) file_size)
     {
 #ifdef _WIN32
 #else
@@ -294,7 +294,7 @@ int    _mulle_mmap_map_range( struct mulle_mmap *p,
 
     rval = memory_map( handle,
                        offset,
-                       length == -1 ? (file_size - offset) : length,
+                       length == (size_t) -1 ? (file_size - offset) : length,
                        p->accessmode_,
                        &ctx);
     if( ! rval)
