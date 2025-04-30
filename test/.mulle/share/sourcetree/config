@@ -1,1 +1,1 @@
-mulle-mmap;${MULLE__MMAP_NODETYPE:-tar};;A0C2A7EA-8409-41B2-BB98-E1FDBE9C127C;${MULLE__MMAP_URL:-https://github.com/nat/mulle-mmap/archive/${MULLE_TAG}.tar.gz};${MULLE__MMAP_BRANCH};${MULLE__MMAP_TAG:-latest};;
+mulle-mmap;${MULLE__MMAP_NODETYPE:-tar};;CD937193-91BC-4F66-9700-6AF5AE3FB790;${MULLE__MMAP_URL:-https://github.com/mulle-nat/mulle-mmap/archive/${MULLE_TAG}.tar.gz};${MULLE__MMAP_BRANCH};${MULLE__MMAP_TAG:-latest};;

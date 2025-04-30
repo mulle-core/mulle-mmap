@@ -434,6 +434,8 @@ void   *mulle_mmap_alloc_shared_pages( size_t size)
 // https://devblogs.microsoft.com/oldnewthing/20150130-00/?p=44793
 #ifdef _WIN32
    abort();
+   p = NULL;
+   MULLE_C_UNUSED( size);
 #else
    p = mmap( 0, size, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1, 0);
    if( p == MAP_FAILED)
