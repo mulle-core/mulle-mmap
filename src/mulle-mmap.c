@@ -21,7 +21,7 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "mulle-mmap.h"
-
+#include "include-private.h"
 
 #ifdef _WIN32
 # include <windows.h>
@@ -37,14 +37,10 @@
 # include <sys/stat.h>
 #endif
 
-#include "include-private.h"
-
-
 uint32_t   mulle_mmap_get_version( void)
 {
    return( MULLE__MMAP_VERSION);
 }
-
 
 /**
  * Determines the operating system's page allocation granularity.
@@ -54,7 +50,6 @@ uint32_t   mulle_mmap_get_version( void)
  * this function serves the cached value, so no further syscalls are made.
  */
 static size_t  mulle_mmap_pagesize;
-
 
 size_t  mulle_mmap_get_system_pagesize( void)
 {
@@ -84,7 +79,6 @@ static inline size_t   mulle_mmap_pagealign_offset( size_t offset)
     return( (offset / page_size) * page_size);
 }
 
-
 static inline void   *_mulle_mmap_get_mapping_start( struct mulle_mmap *p)
 {
    char   *data;
@@ -94,7 +88,6 @@ static inline void   *_mulle_mmap_get_mapping_start( struct mulle_mmap *p)
       data -= _mulle_mmap_get_mapping_offset( p);
    return( data);
 }
-
 
 #ifdef _WIN32
 
@@ -111,9 +104,6 @@ static inline DWORD   mulle_mmap_int64_low( int64_t n)
 }
 
 #endif // _WIN32
-
-
-
 
 static mulle_mmap_file_t   mulle_mmap_file_open( char *path,
                                                  enum mulle_mmap_accessmode mode)
@@ -135,7 +125,6 @@ static mulle_mmap_file_t   mulle_mmap_file_open( char *path,
     return( handle);
 }
 
-
 static inline int64_t   mulle_mmap_file_query_size( mulle_mmap_file_t handle)
 {
 #ifdef _WIN32
@@ -154,8 +143,6 @@ static inline int64_t   mulle_mmap_file_query_size( mulle_mmap_file_t handle)
 #endif
 }
 
-
-
 struct memory_map_result
 {
     char      *data;
@@ -165,7 +152,6 @@ struct memory_map_result
     mulle_mmap_file_t   file_mapping_handle;
 #endif
 };
-
 
 static int   memory_map( mulle_mmap_file_t handle,
                          int64_t offset,
@@ -235,7 +221,6 @@ static int   memory_map( mulle_mmap_file_t handle,
     return( 0);
 }
 
-
 // -- mulle_mmap --
 
 void  _mulle_mmap_done( struct mulle_mmap *p)
@@ -243,8 +228,6 @@ void  _mulle_mmap_done( struct mulle_mmap *p)
    _mulle_mmap_conditional_sync( p);
    _mulle_mmap_unmap( p);
 }
-
-
 
 int   _mulle_mmap_map_file_range( struct mulle_mmap *p,
                                   char *path,
@@ -264,7 +247,6 @@ int   _mulle_mmap_map_file_range( struct mulle_mmap *p,
 
    return( rval);
 }
-
 
 int    _mulle_mmap_map_range( struct mulle_mmap *p,
                               mulle_mmap_file_t handle,
@@ -319,7 +301,6 @@ int    _mulle_mmap_map_range( struct mulle_mmap *p,
     return( rval);
 }
 
-
 int   _mulle_mmap_sync( struct mulle_mmap *p)
 {
     if( ! _mulle_mmap_is_open( p))
@@ -348,7 +329,6 @@ int   _mulle_mmap_sync( struct mulle_mmap *p)
 #endif
     return( 0);
 }
-
 
 int   _mulle_mmap_unmap( struct mulle_mmap *p)
 {
@@ -391,7 +371,6 @@ int   _mulle_mmap_unmap( struct mulle_mmap *p)
     return( rval);
 }
 
-
 int   _mulle_mmap_is_mapped( struct mulle_mmap *p)
 {
 #ifdef _WIN32
@@ -401,7 +380,6 @@ int   _mulle_mmap_is_mapped( struct mulle_mmap *p)
 #endif
 }
 
-
 int   _mulle_mmap_conditional_sync( struct mulle_mmap *p)
 {
    if( p->accessmode_ == mulle_mmap_read)
@@ -409,13 +387,12 @@ int   _mulle_mmap_conditional_sync( struct mulle_mmap *p)
    return( _mulle_mmap_sync( p));
 }
 
-
 void   *mulle_mmap_alloc_pages( size_t size)
 {
    void  *p;
 
 #ifdef _WIN32
-   VirtualAlloc( &p, size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+   p = VirtualAlloc( NULL, size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 #else   
    p = mmap( 0, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
    if( p == MAP_FAILED)
@@ -423,7 +400,6 @@ void   *mulle_mmap_alloc_pages( size_t size)
 #endif   
    return( p);
 }
-
 
 void   *mulle_mmap_alloc_shared_pages( size_t size)
 {
@@ -443,7 +419,6 @@ void   *mulle_mmap_alloc_shared_pages( size_t size)
 #endif
    return( p);
 }
-
 
 int   mulle_mmap_free_pages( void *p, size_t size)
 {

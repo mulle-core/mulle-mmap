@@ -12,4 +12,6 @@ endif()
 #
 set( SOURCES
 src/mulle-mmap.c
+src/mulle-mmap-posix.c
+src/mulle-mmap-windows.c
 )
