@@ -1,0 +1,67 @@
+=== Memory Mapping Persistence Tests ===
+
+These tests verify fundamental mmap() behavior:
+1. Mapped memory remains accessible after closing file descriptor
+2. Mapped memory behavior when original file is removed
+
+=== Test: Memory Mapping Persistence After File Descriptor Close ===
+
+Creating test file: persistent_test.txt (284 bytes)
+Test file created successfully
+
+Phase 1: Opening file and mapping into memory
+  Opened file with descriptor: 3
+  File mapped successfully
+  Mapped length: 284 bytes
+  Verifying data access while file is open...
+  SUCCESS: Data matches original content while file is open
+
+Phase 2: Closing file descriptor
+  File descriptor 3 closed
+  SUCCESS: mmap still reports as mapped after fd close
+
+Phase 3: Accessing mapped memory after file descriptor close
+  Testing memory access after file descriptor close...
+  SUCCESS: All mapped data still accessible and correct
+  First 100 characters of mapped data:
+  "This is a test file for persistent memory mapping.\nWe will map this file into memory, close the file"
+
+  Testing byte-by-byte access to entire mapped region...
+  SUCCESS: All 284 bytes accessible and correct
+
+Phase 4: Cleanup
+  Memory mapping cleaned up
+  Test file removed
+  Test completed successfully
+
+=== CONCLUSION: Memory mapping persists after file descriptor close ===
+This demonstrates that mmap() creates an independent mapping that
+survives the closure of the original file descriptor.
+
+=== Test: Memory Mapping After File Removal ===
+
+Creating test file: removable_test.txt (97 bytes)
+Test file created successfully
+
+Phase 1: Mapping file with _mulle_mmap_map_file
+  File mapped successfully: 97 bytes
+  Initial data verification: SUCCESS
+
+Phase 2: Removing file while mapped
+  File 'removable_test.txt' removed from filesystem
+  mmap still reports as mapped after file removal
+
+Phase 3: Accessing mapped memory after file removal
+  Testing memory access after file removal...
+  SUCCESS: Mapped data still accessible and correct after file removal
+  First 50 characters: "Test content for file removal scenario.\nThis tests"
+
+Phase 4: Cleanup
+  Memory mapping cleaned up
+  Test completed
+
+=== CONCLUSION: Memory mapping behavior with file removal ===
+On most Unix systems, mapped memory survives file removal because
+the kernel maintains the file data until all references are closed.
+
+=== All Memory Mapping Persistence Tests Completed ===

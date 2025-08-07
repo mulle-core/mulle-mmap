@@ -30,7 +30,7 @@ static void test_shared_page_allocation( void)
       return;
    }
    
-   printf( "  SUCCESS: Allocated shared %zu bytes at %p\n", page_size, shared_pages);
+   printf( "  SUCCESS: Allocated shared %zu bytes\n", page_size);
    
    printf( "Phase 2: Testing zero-filled guarantee\n");
    
@@ -105,7 +105,7 @@ static void test_shared_pages_parent_child( void)
    }
    
    byte_ptr = (volatile unsigned char *) shared_pages;
-   printf( "  SUCCESS: Allocated shared page at %p\n", shared_pages);
+   printf( "  SUCCESS: Allocated shared page\n");
    
    // Initialize with known pattern in parent
    byte_ptr[0] = 0x12;
@@ -157,7 +157,7 @@ static void test_shared_pages_parent_child( void)
    else
    {
       // Parent process
-      printf( "  PARENT: Waiting for child (PID %d)\n", pid);
+      printf( "  PARENT: Waiting for child\n");
       
       // Wait for child to complete
       if( waitpid( pid, &status, 0) == -1)
@@ -238,7 +238,7 @@ static void test_multiple_shared_pages( void)
       return;
    }
    
-   printf( "  SUCCESS: Allocated %zu shared bytes at %p\n", alloc_size, shared_pages);
+   printf( "  SUCCESS: Allocated %zu shared bytes\n", alloc_size);
    
    printf( "Phase 2: Testing zero-filled guarantee across all shared pages\n");
    

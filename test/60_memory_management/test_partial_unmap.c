@@ -37,10 +37,10 @@ static void test_partial_unmap_three_pages( void)
    page2 = page1 + page_size;
    page3 = page2 + page_size;
    
-   printf( "  SUCCESS: Allocated 3 pages at %p\n", pages);
-   printf( "    Page 1: %p - %p\n", page1, page1 + page_size - 1);
-   printf( "    Page 2: %p - %p\n", page2, page2 + page_size - 1);
-   printf( "    Page 3: %p - %p\n", page3, page3 + page_size - 1);
+   printf( "  SUCCESS: Allocated 3 pages\n");
+   printf( "    Page 1: [allocated]\n");
+   printf( "    Page 2: [allocated]\n");
+   printf( "    Page 3: [allocated]\n");
    
    printf( "Phase 2: Writing unique patterns to each page\n");
    
@@ -160,7 +160,7 @@ static void test_partial_unmap_edge_cases( void)
    }
    
    start_ptr = (char *) pages;
-   printf( "  SUCCESS: Allocated 4 pages at %p\n", pages);
+   printf( "  SUCCESS: Allocated 4 pages\n");
    
    printf( "Phase 2: Testing edge case - unmap first page\n");
    
@@ -227,7 +227,7 @@ static void test_partial_unmap_non_aligned( void)
    }
    
    start_ptr = (char *) pages;
-   printf( "  SUCCESS: Allocated 3 pages at %p\n", pages);
+   printf( "  SUCCESS: Allocated 3 pages\n");
    
    printf( "Phase 2: Attempting to unmap non-page-aligned region\n");
    printf( "  This should either work or fail gracefully\n");

@@ -58,13 +58,12 @@ static void test_map_with_handle( char *filename, char *description)
    }
 
    // Get the mapped data and length
-   data   = (char *) _mulle_mmap_get_data( &info);
+   data   = (char *) _mulle_mmap_get_bytes( &info);
    length = _mulle_mmap_get_length( &info);
 
    printf( "  File size      : %zu bytes\n", length);
    printf( "  Mapped length  : %zu bytes\n", _mulle_mmap_get_mapped_length( &info));
    printf( "  Mapping offset : %zu\n", _mulle_mmap_get_mapping_offset( &info));
-   printf( "  Data pointer   : %p\n", (void *) data);
    
    // Check file handle from mmap
    int mmap_handle = _mulle_mmap_get_file_handle( &info);
@@ -141,7 +140,7 @@ static void test_map_range_with_handle( char *filename, size_t offset, size_t le
    }
 
    // Get the mapped data and properties
-   data            = (char *) _mulle_mmap_get_data( &info);
+   data            = (char *) _mulle_mmap_get_bytes( &info);
    actual_length   = _mulle_mmap_get_length( &info);
    mapped_length   = _mulle_mmap_get_mapped_length( &info);
    mapping_offset  = _mulle_mmap_get_mapping_offset( &info);
@@ -149,7 +148,6 @@ static void test_map_range_with_handle( char *filename, size_t offset, size_t le
    printf( "  Actual length   : %zu bytes\n", actual_length);
    printf( "  Mapped length   : %zu bytes\n", mapped_length);
    printf( "  Mapping offset  : %zu\n", mapping_offset);
-   printf( "  Data pointer    : %p\n", (void *) data);
 
    // Verify data pointer
    if( actual_length > 0 && data == NULL)

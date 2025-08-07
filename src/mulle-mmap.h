@@ -118,6 +118,15 @@ static inline void   _mulle_mmap_init( struct mulle_mmap *p,
 }
 
 
+static inline void   mulle_mmap_init( struct mulle_mmap *p,
+                                      enum mulle_mmap_accessmode mode)
+{
+   if( ! p)
+      return;
+   _mulle_mmap_init( p, mode);
+}
+
+
 /**
 * If this is a read-write mapping, the destructor invokes sync. Regardless
 * of the access mode, unmap is invoked as a final step.
@@ -147,13 +156,85 @@ static inline mulle_mmap_file_t
 }
 
 
+static inline mulle_mmap_file_t
+   mulle_mmap_get_file_handle( struct mulle_mmap *p)
+{
+   if( ! p)
+      return( MULLE_MMAP_INVALID_HANDLE);
+   return( _mulle_mmap_get_file_handle( p));
+}
+
+
 #ifdef _WIN32
 static inline mulle_mmap_file_t
    _mulle_mmap_get_file_mapping_handle( struct mulle_mmap *p)
 {
    return( p->file_mapping_handle_);
 }
+
+
+static inline mulle_mmap_file_t
+   mulle_mmap_get_file_mapping_handle( struct mulle_mmap *p)
+{
+   if( ! p)
+      return( MULLE_MMAP_INVALID_HANDLE);
+   return( _mulle_mmap_get_file_mapping_handle( p));
+}
 #endif
+
+
+/* Platform-specific function declarations.
+ * These functions have different implementations in mulle-mmap-posix.c 
+ * and mulle-mmap-windows.c
+ */
+
+// System page size - platform specific implementation
+size_t   mulle_mmap_get_system_pagesize( void);
+
+// File operations - platform specific implementations  
+mulle_mmap_file_t   mulle_mmap_file_open( char *path, enum mulle_mmap_accessmode mode);
+int64_t             mulle_mmap_file_query_size( mulle_mmap_file_t handle);
+
+// Memory mapping result structure (needs to handle Windows mapping handle)
+struct mulle_mmap_result
+{
+   char      *data;
+   int64_t   length;
+   int64_t   mapped_length;
+#ifdef _WIN32
+   mulle_mmap_file_t   file_mapping_handle;
+#endif
+};
+
+// Core memory mapping - platform specific implementation
+int   mulle_mmap_memory_map( mulle_mmap_file_t handle,
+                            int64_t offset,
+                            int64_t length,
+                            enum mulle_mmap_accessmode mode,
+                            struct mulle_mmap_result *ctx);
+
+// Synchronization - platform specific implementations (low-level, no checking)
+MULLE_C_NONNULL_FIRST
+int   _mulle_mmap_sync( struct mulle_mmap *p);
+
+// Unmapping - platform specific implementations (low-level, no checking)  
+MULLE_C_NONNULL_FIRST
+int   _mulle_mmap_unmap( struct mulle_mmap *p);
+
+// Page allocation - platform specific implementations
+void   *mulle_mmap_alloc_pages( size_t size);
+void   *mulle_mmap_alloc_shared_pages( size_t size);
+
+MULLE__MMAP_GLOBAL
+MULLE_C_NONNULL_FIRST
+int    _mulle_mmap_free_pages( void *p, size_t size);
+
+
+
+// Platform-specific state queries (low-level, no checking)
+MULLE_C_NONNULL_FIRST
+int   _mulle_mmap_is_mapped( struct mulle_mmap *p);
+
 
 
 /*
@@ -167,8 +248,12 @@ MULLE__MMAP_GLOBAL
 void   *mulle_mmap_alloc_pages( size_t size);
 // free with this
 
-MULLE__MMAP_GLOBAL
-int     mulle_mmap_free_pages( void *p, size_t size);
+static inline 
+int     mulle_mmap_free_pages( void *p, size_t size)
+{
+   if( p)
+      return( _mulle_mmap_free_pages( p, size));
+}
 
 
 /* like mulle_mmap_alloc_pages but produces shared memory pages instead
@@ -183,6 +268,13 @@ static inline int   _mulle_mmap_is_open( struct mulle_mmap *p)
    return( p->file_handle_ != MULLE_MMAP_INVALID_HANDLE);
 }
 
+static inline int   mulle_mmap_is_open( struct mulle_mmap *p)
+{
+   if( ! p)
+      return( 0);
+   return( _mulle_mmap_is_open( p));
+}
+
     /**
      * Returns true if no mapping was established, that is, conceptually the
      * same as though the length that was mapped was 0. This function is
@@ -193,10 +285,24 @@ static inline int   _mulle_mmap_is_empty( struct mulle_mmap *p)
    return( ! p->length_);
 }
 
+static inline int   mulle_mmap_is_empty( struct mulle_mmap *p)
+{
+   if( ! p)
+      return( 1);
+   return( _mulle_mmap_is_empty( p));
+}
+
 
 static inline int   _mulle_mmap_is_writable( struct mulle_mmap *p)
 {
    return( p->accessmode_ == mulle_mmap_write);
+}
+
+static inline int   mulle_mmap_is_writable( struct mulle_mmap *p)
+{
+   if( ! p)
+      return( 0);
+   return( _mulle_mmap_is_writable( p));
 }
 
 
@@ -214,10 +320,24 @@ static inline size_t   _mulle_mmap_get_length( struct mulle_mmap *p)
    return( p->length_);
 }
 
+static inline size_t   mulle_mmap_get_length( struct mulle_mmap *p)
+{
+   if( ! p)
+      return( 0);
+   return( _mulle_mmap_get_length( p));
+}
+
 
 static inline size_t   _mulle_mmap_get_mapped_length( struct mulle_mmap *p)
 {
    return( p->mapped_length_);
+}
+
+static inline size_t   mulle_mmap_get_mapped_length( struct mulle_mmap *p)
+{
+   if( ! p)
+      return( 0);
+   return( _mulle_mmap_get_mapped_length( p));
 }
 
 
@@ -226,10 +346,24 @@ static inline size_t   _mulle_mmap_get_mapping_offset( struct mulle_mmap *p)
    return( p->mapped_length_ - p->length_);
 }
 
+static inline size_t   mulle_mmap_get_mapping_offset( struct mulle_mmap *p)
+{
+   if( ! p)
+      return( 0);
+   return( _mulle_mmap_get_mapping_offset( p));
+}
 
-static inline void   *_mulle_mmap_get_data( struct mulle_mmap *p)
+
+static inline void   *_mulle_mmap_get_bytes( struct mulle_mmap *p)
 {
    return( p->data_);
+}
+
+static inline void   *mulle_mmap_get_bytes( struct mulle_mmap *p)
+{
+   if( ! p)
+      return( NULL);
+   return( _mulle_mmap_get_bytes( p));
 }
 
 
@@ -277,6 +411,17 @@ static inline int   _mulle_mmap_map_file( struct mulle_mmap *p,
    return( _mulle_mmap_map_file_range( p, path, 0, (size_t) -1));
 }
 
+
+static inline int   mulle_mmap_map_file( struct mulle_mmap *p,
+                                         char *path)
+{
+   if( ! p)
+      return( 0);
+
+   return( _mulle_mmap_map_file( p, path));
+}
+
+
 /**
  * Establishes a memory mapping with AccessMode as was given during init.
  * If the mapping is unsuccessful, the return value is -1 and the struct
@@ -302,6 +447,18 @@ int    _mulle_mmap_map_range( struct mulle_mmap *p,
                               size_t offset,
                               size_t length);
 
+
+static inline int   mulle_mmap_map_range( struct mulle_mmap *p,
+                                          mulle_mmap_file_t handle,
+                                          size_t offset,
+                                          size_t length)
+{
+   if( ! p)
+      return( 0);
+
+   return( _mulle_mmap_map_range( p, handle, offset, length));
+}
+
 /**
  * Establishes a memory mapping with AccessMode as was given during init.
  * If the mapping is unsuccessful, the return value is -1 and the struct
@@ -317,6 +474,14 @@ static inline int  _mulle_mmap_map( struct mulle_mmap *p,
                                     mulle_mmap_file_t handle)
 {
    return( _mulle_mmap_map_range( p, handle, 0, (size_t) -1));
+}
+
+static inline int   mulle_mmap_map( struct mulle_mmap *p,
+                                    mulle_mmap_file_t handle)
+{
+   if( ! p)
+      return( -1);
+   return( _mulle_mmap_map( p, handle));
 }
 
 /**

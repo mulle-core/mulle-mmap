@@ -1,0 +1,69 @@
+Reading file: test.c
+File size     : 1572 bytes
+Mapped length : 1572 bytes
+Length        : 1572 bytes
+File contents:
+----------------------------------------
+#include <mulle-mmap/mulle-mmap.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+int main( int argc, char *argv[])
+{
+   struct mulle_mmap   info;
+   char                *data;
+   size_t              length;
+   size_t              i;
+   char                *filename;
+
+   // Use command line argument or default to this test file
+   filename = (argc > 1) ? argv[1] : "test.c";
+
+   printf( "Reading file: %s\n", filename);
+
+   // Initialize mmap structure for read-only access
+   _mulle_mmap_init( &info, mulle_mmap_read);
+   
+   // Map the entire file
+   if( _mulle_mmap_map_file( &info, filename))
+   {
+      printf( "Failed to mmap file '%s': %s\n", filename, strerror( errno));
+      return( 1);
+   }
+
+   // Check if mapping was successful
+   if( ! _mulle_mmap_is_open( &info))
+   {
+      printf( "mmap is not open\n");
+      return( 2);
+   }
+
+   // Get the mapped data and length
+   data   = (char *) _mulle_mmap_get_bytes( &info);
+   length = _mulle_mmap_get_length( &info);
+
+   printf( "File size     : %zu bytes\n", length);
+   printf( "Mapped length : %zu bytes\n", _mulle_mmap_get_mapped_length( &info));
+   printf( "Length        : %zu bytes\n", _mulle_mmap_get_length( &info));
+   printf( "File contents:\n");
+   printf( "----------------------------------------\n");
+   
+   // Print the file contents
+   for( i = 0; i < length; i++)
+   {
+      putchar( data[i]);
+   }
+   
+   printf( "----------------------------------------\n");
+   
+   // Clean up
+   _mulle_mmap_done( &info);
+   
+   printf( "Test completed successfully.\n");
+   return( 0);
+}
+----------------------------------------
+Test completed successfully.

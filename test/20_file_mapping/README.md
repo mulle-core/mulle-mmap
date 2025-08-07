@@ -78,7 +78,7 @@ This test suite covers:
 - [x] `_mulle_mmap_get_length()`
 - [x] `_mulle_mmap_get_mapped_length()`
 - [x] `_mulle_mmap_get_mapping_offset()`
-- [x] `_mulle_mmap_get_data()`
+- [x] `_mulle_mmap_get_bytes()`
 - [x] `_mulle_mmap_get_file_handle()`
 
 ## Running Tests

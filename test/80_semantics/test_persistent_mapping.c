@@ -85,12 +85,11 @@ static void test_persistent_mapping_after_close( void)
    }
    
    // Get mapped data
-   mapped_data   = (char *) _mulle_mmap_get_data( &info);
+   mapped_data   = (char *) _mulle_mmap_get_bytes( &info);
    mapped_length = _mulle_mmap_get_length( &info);
    
    printf( "  File mapped successfully\n");
    printf( "  Mapped length: %zu bytes\n", mapped_length);
-   printf( "  Mapped data pointer: %p\n", (void *) mapped_data);
    
    // Verify we can read the data while file is open
    printf( "  Verifying data access while file is open...\n");
@@ -220,10 +219,10 @@ static void test_mapping_with_file_removal( void)
       return;
    }
    
-   mapped_data   = (char *) _mulle_mmap_get_data( &info);
+   mapped_data   = (char *) _mulle_mmap_get_bytes( &info);
    mapped_length = _mulle_mmap_get_length( &info);
    
-   printf( "  File mapped successfully: %zu bytes at %p\n", mapped_length, (void *) mapped_data);
+   printf( "  File mapped successfully: %zu bytes\n", mapped_length);
    
    // Verify initial data access
    if( memcmp( mapped_data, test_content, test_size) != 0)

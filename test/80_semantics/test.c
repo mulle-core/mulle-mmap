@@ -36,7 +36,7 @@ int main( int argc, char *argv[])
    }
 
    // Get the mapped data and length
-   data   = (char *) _mulle_mmap_get_data( &info);
+   data   = (char *) _mulle_mmap_get_bytes( &info);
    length = _mulle_mmap_get_length( &info);
 
    printf( "File size     : %zu bytes\n", length);

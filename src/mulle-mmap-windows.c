@@ -49,7 +49,7 @@ static inline void   *_mulle_mmap_get_mapping_start( struct mulle_mmap *p)
 {
    char   *data;
 
-   data = _mulle_mmap_get_data( p);
+   data = _mulle_mmap_get_bytes( p);
    if( data)
       data -= _mulle_mmap_get_mapping_offset( p);
    return( data);
@@ -60,7 +60,7 @@ int   _mulle_mmap_sync( struct mulle_mmap *p)
    if( ! _mulle_mmap_is_open( p))
       return( -1);
 
-   if( _mulle_mmap_get_data( p))
+   if( _mulle_mmap_get_bytes( p))
    {
       if( FlushViewOfFile( _mulle_mmap_get_mapping_start( p),
                            p->mapped_length_) == 0
@@ -99,19 +99,19 @@ int   _mulle_mmap_unmap( struct mulle_mmap *p)
    return( rval);
 }
 
-void   *mulle_mmap_alloc_pages_platform( size_t size)
+void   *mulle_mmap_alloc_pages( size_t size)
 {
    return( VirtualAlloc( NULL, size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
 }
 
-void   *mulle_mmap_alloc_shared_pages_platform( size_t size)
+void   *mulle_mmap_alloc_shared_pages( size_t size)
 {
    abort();
    MULLE_C_UNUSED( size);
    return( NULL);
 }
 
-int   mulle_mmap_free_pages_platform( void *p, size_t size)
+int   _mulle_mmap_free_pages( void *p, size_t size)
 {
    return( ! VirtualFree( p, size, MEM_RELEASE));
 }
@@ -128,7 +128,7 @@ static inline DWORD   mulle_mmap_int64_low( int64_t n)
 }
 
 // Platform-specific functions with standard names
-size_t   mulle_mmap_get_system_pagesize_platform( void)
+size_t   mulle_mmap_get_system_pagesize( void)
 {
    SYSTEM_INFO SystemInfo;
    GetSystemInfo(&SystemInfo);

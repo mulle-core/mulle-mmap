@@ -81,7 +81,7 @@ static void test_basic_page_operations( void)
       return;
    }
    
-   printf( "  SUCCESS: Regular pages allocated at %p\n", regular_pages);
+   printf( "  SUCCESS: Regular pages allocated\n");
    
    printf( "Phase 2: Shared page allocation\n");
    
@@ -94,7 +94,7 @@ static void test_basic_page_operations( void)
       return;
    }
    
-   printf( "  SUCCESS: Shared pages allocated at %p\n", shared_pages);
+   printf( "  SUCCESS: Shared pages allocated\n");
    
    printf( "Phase 3: Testing zero-fill guarantee\n");
    
@@ -210,7 +210,7 @@ static void test_page_size_variations( void)
       reg_pages = mulle_mmap_alloc_pages( alloc_size);
       if( reg_pages)
       {
-         printf( "  Regular pages: SUCCESS at %p\n", reg_pages);
+         printf( "  Regular pages: SUCCESS\n");
          mulle_mmap_free_pages( reg_pages, alloc_size);
       }
       else
@@ -222,7 +222,7 @@ static void test_page_size_variations( void)
       shr_pages = mulle_mmap_alloc_shared_pages( alloc_size);
       if( shr_pages)
       {
-         printf( "  Shared pages: SUCCESS at %p\n", shr_pages);
+         printf( "  Shared pages: SUCCESS\n");
          mulle_mmap_free_pages( shr_pages, alloc_size);
       }
       else
@@ -261,7 +261,7 @@ static void test_data_integrity_patterns( void)
    }
    
    byte_ptr = (unsigned char *) pages;
-   printf( "  Allocated %zu bytes at %p\n", alloc_size, pages);
+   printf( "  Allocated %zu bytes\n", alloc_size);
    
    printf( "Phase 1: Writing test patterns\n");
    

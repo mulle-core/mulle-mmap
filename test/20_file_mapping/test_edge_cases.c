@@ -44,10 +44,10 @@ static void test_unaligned_offsets( void)
       size_t actual_length = _mulle_mmap_get_length( &info);
       size_t mapped_length = _mulle_mmap_get_mapped_length( &info);
       size_t mapping_offset = _mulle_mmap_get_mapping_offset( &info);
-      void *data = _mulle_mmap_get_data( &info);
+      void *data = _mulle_mmap_get_bytes( &info);
       
-      printf( "    SUCCESS - Length: %zu, Mapped: %zu, MapOffset: %zu, Data: %p\n", 
-              actual_length, mapped_length, mapping_offset, data);
+      printf( "    SUCCESS - Length: %zu, Mapped: %zu, MapOffset: %zu\n",
+              actual_length, mapped_length, mapping_offset);
       
       // Verify we can read the data
       if( actual_length > 0 && data != NULL)
@@ -180,8 +180,8 @@ static void test_boundary_conditions( void)
    else
    {
       size_t actual_length = _mulle_mmap_get_length( &info);
-      void *data = _mulle_mmap_get_data( &info);
-      printf( "    SUCCESS: Mapped last byte, length: %zu, data: %p\n", actual_length, data);
+      void *data = _mulle_mmap_get_bytes( &info);
+      printf( "    SUCCESS: Mapped last byte, length: %zu\n", actual_length);
       if( data != NULL)
       {
          unsigned char last_byte = *((unsigned char *) data);
@@ -243,12 +243,11 @@ static void test_page_boundary_alignments( void)
       size_t actual_length = _mulle_mmap_get_length( &info);
       size_t mapped_length = _mulle_mmap_get_mapped_length( &info);
       size_t mapping_offset = _mulle_mmap_get_mapping_offset( &info);
-      void *data = _mulle_mmap_get_data( &info);
+      void *data = _mulle_mmap_get_bytes( &info);
       
       printf( "    SUCCESS - Length: %zu, Mapped: %zu, MapOffset: %zu\n", 
               actual_length, mapped_length, mapping_offset);
-      printf( "    Data alignment: %p (aligned to %zu: %s)\n", 
-              data, 
+      printf( "    Data aligned to %zu: %s\n",
               page_size,
               ((uintptr_t) data % page_size == 0) ? "YES" : "NO");
       

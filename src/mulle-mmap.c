@@ -21,6 +21,7 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "mulle-mmap.h"
+
 #include "include-private.h"
 
 #include <stdint.h>
@@ -28,24 +29,6 @@
 uint32_t   mulle_mmap_get_version( void)
 {
    return( MULLE__MMAP_VERSION);
-}
-
-/**
- * Determines the operating system's page allocation granularity.
- *
- * On the first call to this function, it invokes the operating system specific syscall
- * to determine the page size, caches the value, and returns it. Any subsequent call to
- * this function serves the cached value, so no further syscalls are made.
- */
-static size_t  mulle_mmap_pagesize;
-
-size_t  mulle_mmap_get_system_pagesize( void)
-{
-   if( ! mulle_mmap_pagesize)
-   {
-      mulle_mmap_pagesize = mulle_mmap_get_system_pagesize_platform();
-   }
-   return( mulle_mmap_pagesize);
 }
 
 /**
@@ -65,7 +48,7 @@ static inline void   *_mulle_mmap_get_mapping_start( struct mulle_mmap *p)
 {
    char   *data;
 
-   data = _mulle_mmap_get_data( p);
+   data = _mulle_mmap_get_bytes( p);
    if( data)
       data -= _mulle_mmap_get_mapping_offset( p);
    return( data);
@@ -156,26 +139,6 @@ int    _mulle_mmap_map_range( struct mulle_mmap *p,
     return( rval);
 }
 
-int   _mulle_mmap_sync( struct mulle_mmap *p)
-{
-   return( mulle_mmap_sync( p));
-}
-
-int   _mulle_mmap_unmap( struct mulle_mmap *p)
-{
-   int   rval;
-
-   rval = mulle_mmap_unmap( p);
-
-   // Reset fields to their default values.
-   _mulle_mmap_init( p, p->accessmode_);
-   return( rval);
-}
-
-int   _mulle_mmap_is_mapped( struct mulle_mmap *p)
-{
-   return( mulle_mmap_is_mapped( p));
-}
 
 int   _mulle_mmap_conditional_sync( struct mulle_mmap *p)
 {
@@ -184,17 +147,3 @@ int   _mulle_mmap_conditional_sync( struct mulle_mmap *p)
    return( _mulle_mmap_sync( p));
 }
 
-void   *mulle_mmap_alloc_pages( size_t size)
-{
-   return( mulle_mmap_alloc_pages_platform( size));
-}
-
-void   *mulle_mmap_alloc_shared_pages( size_t size)
-{
-   return( mulle_mmap_alloc_shared_pages_platform( size));
-}
-
-int   mulle_mmap_free_pages( void *p, size_t size)
-{
-   return( mulle_mmap_free_pages_platform( p, size));
-}

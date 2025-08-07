@@ -59,7 +59,7 @@ static void test_free_wrong_size( void)
       return;
    }
    
-   printf( "  SUCCESS: Allocated %zu bytes at %p\n", alloc_size, pages);
+   printf( "  SUCCESS: Allocated %zu bytes\n", alloc_size);
    
    printf( "Phase 2: Attempting to free with wrong size\n");
    
@@ -125,7 +125,7 @@ static void test_double_free( void)
       return;
    }
    
-   printf( "  SUCCESS: Allocated %zu bytes at %p\n", page_size, pages);
+   printf( "  SUCCESS: Allocated %zu bytesn", page_size);
    
    printf( "Phase 2: First free\n");
    
@@ -183,7 +183,7 @@ static void test_zero_size_allocation( void)
    }
    else
    {
-      printf( "  INFO: Zero-size allocation returned pointer: %p\n", pages);
+      printf( "  INFO: Zero-size allocation returned pointer\n");
       printf( "  Some implementations may return a valid pointer for zero-size\n");
       
       // Try to free it
@@ -215,7 +215,7 @@ static void test_very_large_allocation( void)
    }
    else
    {
-      printf( "  UNEXPECTED: Very large allocation succeeded: %p\n", pages);
+      printf( "  UNEXPECTED: Very large allocation succeeded\n");
       printf( "  This is surprising - attempting to free\n");
       
       // Try to free it immediately without using it
@@ -254,7 +254,7 @@ static void test_alignment_expectations( void)
       }
       
       addr = (uintptr_t) pages;
-      printf( "  %zu pages at %p: ", i, pages);
+      printf( "  %zu pages: ", i);
       
       if( addr % page_size == 0)
       {
@@ -300,7 +300,7 @@ static void test_concurrent_allocations( void)
          break;
       }
       
-      printf( "  Chunk %zu: %zu bytes at %p\n", i, alloc_size, pages[i]);
+      printf( "  Chunk %zu: %zu bytes\n", i, alloc_size);
       
       // Quick write test
       unsigned char *byte_ptr = (unsigned char *) pages[i];

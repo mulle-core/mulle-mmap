@@ -1,0 +1,81 @@
+=== Write Memory Mapping Persistence Tests ===
+
+These tests verify fundamental mmap() write behavior:
+1. Write mappings remain functional after closing file descriptor
+2. Memory modifications are written back to the file
+3. Changes persist across mapping cleanup and file re-reading
+
+=== Test: Write Memory Mapping Persistence After File Descriptor Close ===
+
+Creating test file with mmap: write_persistence_test.txt (256 bytes)
+  Initial content written: "VfL Bochum 1848"
+  File size: 256 bytes (rest filled with zeros)
+  Test file created successfully using mmap
+
+Phase 1: Reading file content before modification
+Reading file content with fopen: write_persistence_test.txt
+  First 50 bytes: "VfL Bochum 1848\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+  File reading completed
+
+Phase 2: Opening file for read/write mapping
+  Opened file with descriptor: 3
+  File mapped successfully for read/write
+  Current mapped content: "VfL Bochum 1848"
+
+Phase 3: Closing file descriptor while keeping mapping
+  File descriptor 3 closed
+  SUCCESS: mmap still reports as mapped and writable after fd close
+
+Phase 4: Modifying mapped memory after file descriptor close
+  Modified mapped memory to: "MODIFIED: VfL Bochum 1848 - Champions!"
+  Added more content at offset 50
+  Memory modification completed while file descriptor is closed
+
+Phase 5: Cleaning up mapping
+  Memory mapping cleaned up (changes should be flushed to disk)
+
+Phase 6: Verifying file changes by re-reading
+Reading file content with fopen: write_persistence_test.txt
+  First 50 bytes: "MODIFIED: VfL Bochum 1848 - Champions!\0\0\0\0\0\0\0\0\0\0\0\0"
+  File reading completed
+
+Phase 7: Final verification with fresh file mapping
+  Fresh mapping content: "MODIFIED: VfL Bochum 1848 - Champions!"
+  Content at offset 50: "More changes at offset 50"
+  ✅ SUCCESS: Modifications were written to file!
+  ✅ SUCCESS: Offset 50 modifications were written to file!
+
+Phase 8: Cleanup
+  Test file removed
+  Test completed successfully
+
+=== CONCLUSION: Write mapping persists and flushes after file descriptor close ===
+This demonstrates that mmap() write modifications are preserved
+and flushed to the file even after closing the original file descriptor.
+
+=== Test: Write Mapping with Explicit Sync ===
+
+Creating test file with mmap: sync_test.txt (128 bytes)
+  Initial content written: "VfL Bochum 1848"
+  File size: 128 bytes (rest filled with zeros)
+  Test file created successfully using mmap
+
+Phase 1: Mapping file for read/write
+  File mapped for read/write
+
+Phase 2: Modifying memory
+  Modified content to: "SYNC TEST: VfL Bochum 1848"
+
+Phase 3: Explicit sync to disk
+  Calling _mulle_mmap_conditional_sync()...
+  Sync completed
+
+Phase 4: Reading file content while mapping is still active
+Reading file content with fopen: sync_test.txt
+  First 50 bytes: "SYNC TEST: VfL Bochum 1848\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+  File reading completed
+
+Phase 5: Cleanup
+  Test completed
+
+=== All Write Memory Mapping Persistence Tests Completed ===

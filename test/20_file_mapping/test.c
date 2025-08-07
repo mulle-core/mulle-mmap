@@ -44,13 +44,13 @@ static void test_map_file_basic( char *filename, char *description)
    }
 
    // Get the mapped data and length
-   data   = (char *) _mulle_mmap_get_data( &info);
+   data   = (char *) _mulle_mmap_get_bytes( &info);
    length = _mulle_mmap_get_length( &info);
 
    printf( "  File size      : %zu bytes\n", length);
    printf( "  Mapped length  : %zu bytes\n", _mulle_mmap_get_mapped_length( &info));
    printf( "  Mapping offset : %zu\n", _mulle_mmap_get_mapping_offset( &info));
-   printf( "  Data pointer   : %p\n", (void *) data);
+   printf( "  Data pointer   : %s\n", (void *) data ? "YES" : "NULL");
    
    // Verify data pointer is not NULL for non-empty files
    if( length > 0 && data == NULL)

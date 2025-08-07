@@ -29,7 +29,7 @@ static void test_single_page_allocation( void)
       return;
    }
    
-   printf( "  SUCCESS: Allocated %zu bytes at %p\n", page_size, pages);
+   printf( "  SUCCESS: Allocated %zu bytes\n", page_size);
    
    printf( "Phase 2: Testing zero-filled guarantee\n");
    
@@ -107,7 +107,7 @@ static void test_multiple_page_allocation( void)
       return;
    }
    
-   printf( "  SUCCESS: Allocated %zu bytes at %p\n", alloc_size, pages);
+   printf( "  SUCCESS: Allocated %zu bytes\n", alloc_size);
    
    printf( "Phase 2: Testing zero-filled guarantee across all pages\n");
    
@@ -200,7 +200,7 @@ static void test_various_page_sizes( void)
          continue;
       }
       
-      printf( "  SUCCESS: Allocated %zu bytes at %p\n", alloc_size, pages);
+      printf( "  SUCCESS: Allocated %zu bytes\n", alloc_size);
       
       // Quick zero-fill check (just first and last bytes)
       unsigned char *byte_ptr = (unsigned char *) pages;
@@ -274,7 +274,7 @@ static void test_non_page_aligned_sizes( void)
       }
       else
       {
-         printf( "  SUCCESS: Allocated %zu bytes at %p\n", requested_size, pages);
+         printf( "  SUCCESS: Allocated %zu bytes\n", requested_size);
          
          // Test basic functionality
          unsigned char *byte_ptr = (unsigned char *) pages;

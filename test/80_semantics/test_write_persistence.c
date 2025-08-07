@@ -55,7 +55,7 @@ static void create_test_file_with_mmap( char *filename, size_t size)
    }
    
    // Get mapped data and initialize with zeros
-   mapped_data = (char *) _mulle_mmap_get_data( &info);
+   mapped_data = (char *) _mulle_mmap_get_bytes( &info);
    memset( mapped_data, 0, size);
    
    // Write our test string at the beginning
@@ -154,11 +154,9 @@ static void test_write_persistence_after_close( void)
    }
    
    // Get mapped data
-   mapped_data = (char *) _mulle_mmap_get_data( &info);
+   mapped_data = (char *) _mulle_mmap_get_bytes( &info);
    
    printf( "  File mapped successfully for read/write\n");
-   printf( "  Mapped data pointer: %p\n", (void *) mapped_data);
-   
    // Verify initial content
    printf( "  Current mapped content: \"%.20s\"\n", mapped_data);
    
@@ -220,7 +218,7 @@ static void test_write_persistence_after_close( void)
    }
    else
    {
-      char *verify_data = (char *) _mulle_mmap_get_data( &info);
+      char *verify_data = (char *) _mulle_mmap_get_bytes( &info);
       printf( "  Fresh mapping content: \"%.40s\"\n", verify_data);
       printf( "  Content at offset 50: \"%.25s\"\n", verify_data + 50);
       
@@ -287,7 +285,7 @@ static void test_write_with_explicit_sync( void)
       return;
    }
    
-   mapped_data = (char *) _mulle_mmap_get_data( &info);
+   mapped_data = (char *) _mulle_mmap_get_bytes( &info);
    printf( "  File mapped for read/write\n");
    
    printf( "\nPhase 2: Modifying memory\n");
