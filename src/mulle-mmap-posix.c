@@ -42,6 +42,7 @@
 #endif
 #include <sys/stat.h>
 #include <errno.h>
+#include <stdint.h>
 
 static inline size_t   mulle_mmap_pagealign_offset( size_t offset)
 {
@@ -61,7 +62,7 @@ static inline void   *_mulle_mmap_get_mapping_start( struct mulle_mmap *p)
    return( data);
 }
 
-int   mulle_mmap_sync_posix( struct mulle_mmap *p)
+int   _mulle_mmap_sync( struct mulle_mmap *p)
 {
    if( ! _mulle_mmap_is_open( p))
       return( -1);
@@ -76,7 +77,7 @@ int   mulle_mmap_sync_posix( struct mulle_mmap *p)
    return( 0);
 }
 
-int   mulle_mmap_unmap_posix( struct mulle_mmap *p)
+int   _mulle_mmap_unmap( struct mulle_mmap *p)
 {
    int   rval = 0;
 
@@ -94,10 +95,12 @@ int   mulle_mmap_unmap_posix( struct mulle_mmap *p)
          rval = -1;
    }
 
+   // Reset fields to their default values.
+   _mulle_mmap_init( p, p->accessmode_);
    return( rval);
 }
 
-void   *mulle_mmap_alloc_pages_posix( size_t size)
+void   *mulle_mmap_alloc_pages_platform( size_t size)
 {
    void  *p;
    
@@ -107,7 +110,7 @@ void   *mulle_mmap_alloc_pages_posix( size_t size)
    return( p);
 }
 
-void   *mulle_mmap_alloc_shared_pages_posix( size_t size)
+void   *mulle_mmap_alloc_shared_pages_platform( size_t size)
 {
    void  *p;
    
@@ -117,9 +120,73 @@ void   *mulle_mmap_alloc_shared_pages_posix( size_t size)
    return( p);
 }
 
-int   mulle_mmap_free_pages_posix( void *p, size_t size)
+int   mulle_mmap_free_pages_platform( void *p, size_t size)
 {
    return( munmap( p, size));
+}
+
+// Platform-specific functions with standard names
+size_t   mulle_mmap_get_system_pagesize_platform( void)
+{
+   return( sysconf(_SC_PAGE_SIZE));
+}
+
+mulle_mmap_file_t   mulle_mmap_file_open( char *path, enum mulle_mmap_accessmode mode)
+{
+   return( open( path, mode == mulle_mmap_read ? O_RDONLY : O_RDWR));
+}
+
+int64_t   mulle_mmap_file_query_size( mulle_mmap_file_t handle)
+{
+   struct stat sbuf;
+
+   if( fstat( handle, &sbuf) == -1)
+      return( -1);
+   return( sbuf.st_size);
+}
+
+int   mulle_mmap_memory_map( mulle_mmap_file_t handle,
+                            int64_t offset,
+                            int64_t length,
+                            enum mulle_mmap_accessmode mode,
+                            struct mulle_mmap_result *ctx)
+{
+   int64_t   aligned_offset;
+   int64_t   length_to_map;
+   char      *mapping_start;
+
+   aligned_offset = mulle_mmap_pagealign_offset( (size_t) offset);
+   length_to_map  = offset - aligned_offset + length;
+
+   // (nat) NSData otherwise has problems with 0 byte files
+   if( ! length_to_map)
+   {
+      ctx->data          = 0;
+      ctx->length        = 0;
+      ctx->mapped_length = 0;
+      return( 0);
+   }
+
+   mapping_start = (char *) mmap(
+            0, // Don't give hint as to where to map.
+            length_to_map,
+            mode == mulle_mmap_read ? PROT_READ : PROT_WRITE,
+            MAP_SHARED,
+            handle,
+            aligned_offset);
+   if( mapping_start == MAP_FAILED)
+      return( -1);
+
+   ctx->data          = mapping_start + offset - aligned_offset;
+   ctx->length        = length;
+   ctx->mapped_length = length_to_map;
+
+   return( 0);
+}
+
+int   _mulle_mmap_is_mapped( struct mulle_mmap *p)
+{
+   return( _mulle_mmap_is_open( p));
 }
 
 #endif // !_WIN32

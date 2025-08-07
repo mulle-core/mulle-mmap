@@ -50,5 +50,6 @@ src/generic/include.h
 #
 set( PUBLIC_HEADERS
 src/mulle-mmap.h
+src/mulle-mmap-platform.h
 )
 

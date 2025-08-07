@@ -83,8 +83,9 @@ typedef int     mulle_mmap_file_t;
 
 enum mulle_mmap_accessmode
 {
-   mulle_mmap_read  = 0,
-   mulle_mmap_write = 1
+   mulle_mmap_read     = 0,
+   mulle_mmap_write    = 1,
+   mulle_mmap_no_unmap = 0x80    // do not unmap pages when done
 };
 
 
@@ -123,6 +124,16 @@ static inline void   _mulle_mmap_init( struct mulle_mmap *p,
 */
 MULLE__MMAP_GLOBAL
 void   _mulle_mmap_done( struct mulle_mmap *p);
+
+
+static inline void   mulle_mmap_done( struct mulle_mmap *p)
+{
+   if( p)
+      _mulle_mmap_done( p);
+}
+
+
+
 
 /**
  * On UNIX systems 'file_handle' and 'mapping_handle' are the same. On Windows,
@@ -345,6 +356,36 @@ static inline int   mulle_mmap_equal( struct mulle_mmap *p,
 
 MULLE__MMAP_GLOBAL
 size_t  mulle_mmap_get_system_pagesize( void);
+
+
+// Safe public wrapper functions with parameter checking
+static inline int   mulle_mmap_sync( struct mulle_mmap *p)
+{
+   if( ! p)
+      return( -1);
+   return( _mulle_mmap_sync( p));
+}
+
+static inline int   mulle_mmap_unmap( struct mulle_mmap *p)
+{
+   if( ! p)
+      return( -1);
+   return( _mulle_mmap_unmap( p));
+}
+
+static inline int   mulle_mmap_is_mapped( struct mulle_mmap *p)
+{
+   if( ! p)
+      return( 0);
+   return( _mulle_mmap_is_mapped( p));
+}
+
+static inline int   mulle_mmap_conditional_sync( struct mulle_mmap *p)
+{
+   if( ! p)
+      return( -1);
+   return( _mulle_mmap_conditional_sync( p));
+}
 
 
 #ifdef __has_include

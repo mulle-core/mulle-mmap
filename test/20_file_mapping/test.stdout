@@ -1,0 +1,51 @@
+=== Basic File Mapping Tests ===
+
+Testing empty file (0 bytes) (empty.txt):
+  File size      : 0 bytes
+  Mapped length  : 0 bytes
+  Mapping offset : 0
+  Data pointer   : (nil)
+  Empty file - data pointer may be NULL
+  Test completed successfully
+
+Testing small file (~100 bytes) (small.txt):
+  File size      : 84 bytes
+  Mapped length  : 84 bytes
+  Mapping offset : 0
+  Data pointer   : *
+  SUCCESS: Data pointer is valid
+  First byte: *
+  Last byte : *
+  Test completed successfully
+
+Testing medium file (4096 bytes) (medium.txt):
+  File size      : 4096 bytes
+  Mapped length  : 4096 bytes
+  Mapping offset : 0
+  Data pointer   : *
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing large file (16384 bytes) (large.txt):
+  File size      : 16384 bytes
+  Mapped length  : 16384 bytes
+  Mapping offset : 0
+  Data pointer   : *
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing binary file (512 bytes) (binary.dat):
+  File size      : 512 bytes
+  Mapped length  : 512 bytes
+  Mapping offset : 0
+  Data pointer   : *
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing mapping non-existent file:
+  SUCCESS: Mapping non-existent file failed as expected: No such file or directory
+  SUCCESS: mmap is not open after failed mapping
+  SUCCESS: mmap is not mapped after failed mapping
+  Test completed successfully
+
+=== All Basic File Mapping Tests Completed ===

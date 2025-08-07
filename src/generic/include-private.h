@@ -24,5 +24,6 @@
 #include "_mulle-mmap-include-private.h"
 
 /* You can add some more include statements here */
+#include "mulle-mmap-platform.h"
 
 #endif

@@ -1,0 +1,125 @@
+## API Guide
+
+### Basic Page Allocation
+
+```c
+#include <mulle-mmap/mulle-mmap.h>
+
+// Allocate memory pages
+size_t page_size = mulle_mmap_get_system_pagesize();
+void *pages = mulle_mmap_alloc_pages(page_size * 4);  // 4 pages
+
+if (pages) {
+    // Pages are zero-filled and ready to use
+    memset(pages, 0xFF, page_size);  // Use the memory
+    
+    // Free when done
+    mulle_mmap_free_pages(pages, page_size * 4);
+}
+```
+
+### Shared Memory Pages
+
+```c
+// Allocate shared memory (useful for inter-process communication)
+void *shared = mulle_mmap_alloc_shared_pages(page_size);
+
+if (shared) {
+    // This memory can be shared between parent and child processes
+    strcpy(shared, "Hello from parent");
+    
+    if (fork() == 0) {
+        // Child can read parent's data
+        printf("Child reads: %s\n", (char*)shared);
+        exit(0);
+    }
+    
+    mulle_mmap_free_pages(shared, page_size);
+}
+```
+
+### Partial Unmapping (Advanced)
+
+```c
+// Allocate 3 contiguous pages
+void *pages = mulle_mmap_alloc_pages(page_size * 3);
+char *page1 = (char*)pages;
+char *page2 = page1 + page_size;
+char *page3 = page2 + page_size;
+
+// Use all three pages
+strcpy(page1, "Page 1 data");
+strcpy(page2, "Page 2 data");
+strcpy(page3, "Page 3 data");
+
+// Free only the middle page - pages 1 and 3 remain accessible!
+mulle_mmap_free_pages(page2, page_size);
+
+// Pages 1 and 3 are still usable
+printf("Still accessible: %s and %s\n", page1, page3);
+
+// Clean up remaining pages
+mulle_mmap_free_pages(page1, page_size);
+mulle_mmap_free_pages(page3, page_size);
+```
+
+## File Mapping
+
+### Basic File Reading
+
+```c
+struct mulle_mmap info;
+
+// Initialize for read-only access
+_mulle_mmap_init(&info, mulle_mmap_read|mulle_mmap_no_unmap);
+
+// Map entire file
+if (_mulle_mmap_map_file(&info, "data.txt") == 0) {
+    char *data = _mulle_mmap_get_data(&info);
+    size_t size = _mulle_mmap_get_length(&info);
+    
+    // Use the mapped data (no need to read() or malloc)
+    printf("File content: %.*s\n", (int)size, data);
+    
+    // Cleanup (but keeps memory alive due to `mulle_mmap_no_unmap`)
+    mulle_mmap_done(&info);
+}
+```
+
+### File Writing with Memory Mapping
+
+```c
+struct mulle_mmap info;
+
+// Initialize for read-write access
+_mulle_mmap_init(&info, mulle_mmap_write);
+
+// Map file for writing
+if (_mulle_mmap_map_file(&info, "output.txt") == 0) {
+    char *data = _mulle_mmap_get_data(&info);
+    
+    // Modify data directly in memory
+    strcpy(data, "New content written via mmap");
+    
+    // Changes are automatically written to file on cleanup
+    mulle_mmap_done(&info);
+}
+```
+
+### Range Mapping
+
+```c
+struct mulle_mmap info;
+
+_mulle_mmap_init(&info, mulle_mmap_read);
+
+// Map only part of a file (offset 1024, length 4096 bytes)
+if (_mulle_mmap_map_file_range(&info, "large_file.dat", 1024, 4096) == 0) {
+    char *data = _mulle_mmap_get_data(&info);
+    
+    // Process just this portion of the file
+    process_data(data, 4096);
+    
+    mulle_mmap_done(&info);
+}
+```
