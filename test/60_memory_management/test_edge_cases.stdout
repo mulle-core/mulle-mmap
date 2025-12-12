@@ -1,0 +1,119 @@
+=== Memory Management Edge Case Tests ===
+
+These tests verify error handling and edge cases:
+1. Freeing NULL pointer
+2. Freeing with wrong size
+3. Double-free scenarios
+4. Zero-size allocation
+5. Very large allocation
+6. Memory alignment expectations
+7. Concurrent multiple allocations
+
+=== Test: Freeing NULL Pointer ===
+
+Phase 1: Attempting to free NULL pointer
+  mulle_mmap_free_pages(NULL, 4096) returned: 0
+  SUCCESS: Function handled NULL pointer gracefully
+Test completed
+
+=== Test: Freeing With Wrong Size ===
+
+System page size: 4096 bytes
+Allocating: 8192 bytes (2 pages)
+Phase 1: Allocating pages
+  SUCCESS: Allocated 8192 bytes
+Phase 2: Attempting to free with wrong size
+  Attempting to free 4096 bytes (wrong size - should be 8192)
+  mulle_mmap_free_pages() with wrong size returned: 0
+  INFO: Function accepted wrong size (implementation-dependent behavior)
+  Pages may have been partially freed
+  Attempting to free remaining part
+  Free remaining returned: 0
+Test completed
+
+=== Test: Double Free Scenarios ===
+
+System page size: 4096 bytes
+Phase 1: Allocating page
+  SUCCESS: Allocated 4096 bytes
+Phase 2: First free
+  First free returned: 0
+  SUCCESS: First free succeeded
+Phase 3: Attempting double free
+  Double free returned: 0
+  WARNING: Double free was accepted - this could indicate a problem
+  Some implementations may not detect double-free immediately
+Test completed
+
+=== Test: Zero Size Allocation ===
+
+Phase 1: Attempting to allocate 0 bytes
+  INFO: Zero-size allocation returned NULL (errno: Invalid argument)
+  This is typical behavior for zero-size allocations
+Test completed
+
+=== Test: Very Large Allocation ===
+
+Phase 1: Attempting to allocate very large size
+  Requesting: 9223372036854775807 bytes (SIZE_MAX/2)
+  GOOD: Very large allocation rejected (errno: Cannot allocate memory)
+  System correctly enforced resource limits
+Test completed
+
+=== Test: Memory Alignment Expectations ===
+
+System page size: 4096 bytes
+Phase 1: Testing alignment of allocated pages
+  1 pages: Page-aligned ✓
+  2 pages: Page-aligned ✓
+  3 pages: Page-aligned ✓
+  4 pages: Page-aligned ✓
+  5 pages: Page-aligned ✓
+  6 pages: Page-aligned ✓
+  7 pages: Page-aligned ✓
+  8 pages: Page-aligned ✓
+Test completed
+
+=== Test: Concurrent Multiple Allocations ===
+
+System page size: 4096 bytes
+Phase 1: Allocating multiple pages simultaneously
+  Chunk 0: 4096 bytes
+  Chunk 1: 8192 bytes
+  Chunk 2: 12288 bytes
+  Chunk 3: 16384 bytes
+  Chunk 4: 20480 bytes
+  Chunk 5: 24576 bytes
+  Chunk 6: 28672 bytes
+  Chunk 7: 32768 bytes
+  Chunk 8: 36864 bytes
+  Chunk 9: 40960 bytes
+  SUCCESS: All 10 chunks allocated successfully
+Phase 2: Verifying data integrity
+  Chunk 0: Data integrity OK
+  Chunk 1: Data integrity OK
+  Chunk 2: Data integrity OK
+  Chunk 3: Data integrity OK
+  Chunk 4: Data integrity OK
+  Chunk 5: Data integrity OK
+  Chunk 6: Data integrity OK
+  Chunk 7: Data integrity OK
+  Chunk 8: Data integrity OK
+  Chunk 9: Data integrity OK
+Phase 3: Freeing all chunks
+  Chunk 0: Freed successfully
+  Chunk 1: Freed successfully
+  Chunk 2: Freed successfully
+  Chunk 3: Freed successfully
+  Chunk 4: Freed successfully
+  Chunk 5: Freed successfully
+  Chunk 6: Freed successfully
+  Chunk 7: Freed successfully
+  Chunk 8: Freed successfully
+  Chunk 9: Freed successfully
+  SUCCESS: All chunks freed successfully
+Test completed
+
+=== All Memory Management Edge Case Tests Completed ===
+Note: Some tests may show warnings or implementation-dependent behavior.
+This is normal and helps understand the system's behavior under edge conditions.

@@ -1,0 +1,110 @@
+=== File Range Mapping Tests ===
+
+Testing entire file with SIZE_MAX length:
+  File: small.txt, Offset: 0, Length: 18446744073709551615
+  Actual length   : 84 bytes
+  Mapped length   : 84 bytes
+  Mapping offset  : 0
+  SUCCESS: Data pointer is valid
+  First byte: 0x54
+  Last byte : 0x0a
+  Test completed successfully
+
+Testing first 1024 bytes of medium file:
+  File: medium.txt, Offset: 0, Length: 1024
+  Actual length   : 1024 bytes
+  Mapped length   : 1024 bytes
+  Mapping offset  : 0
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing bytes 1024-3071 of medium file:
+  File: medium.txt, Offset: 1024, Length: 2048
+  Actual length   : 2048 bytes
+  Mapped length   : 3072 bytes
+  Mapping offset  : 1024
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing from byte 2048 to end of medium file:
+  File: medium.txt, Offset: 2048, Length: 18446744073709551615
+  Actual length   : 2048 bytes
+  Mapped length   : 4096 bytes
+  Mapping offset  : 2048
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing first page of large file:
+  File: large.txt, Offset: 0, Length: 4096
+  Actual length   : 4096 bytes
+  Mapped length   : 4096 bytes
+  Mapping offset  : 0
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing second page of large file:
+  File: large.txt, Offset: 4096, Length: 4096
+  Actual length   : 4096 bytes
+  Mapped length   : 4096 bytes
+  Mapping offset  : 0
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing from byte 8192 to end of large file:
+  File: large.txt, Offset: 8192, Length: 18446744073709551615
+  Actual length   : 8192 bytes
+  Mapped length   : 8192 bytes
+  Mapping offset  : 0
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing first half of binary file:
+  File: binary.dat, Offset: 0, Length: 256
+  Actual length   : 256 bytes
+  Mapped length   : 256 bytes
+  Mapping offset  : 0
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing second half of binary file:
+  File: binary.dat, Offset: 256, Length: 256
+  Actual length   : 256 bytes
+  Mapped length   : 512 bytes
+  Mapping offset  : 256
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing middle section of binary file:
+  File: binary.dat, Offset: 100, Length: 312
+  Actual length   : 312 bytes
+  Mapped length   : 412 bytes
+  Mapping offset  : 100
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing single byte from small file:
+  File: small.txt, Offset: 0, Length: 1
+  Actual length   : 1 bytes
+  Mapped length   : 1 bytes
+  Mapping offset  : 0
+  SUCCESS: Data pointer is valid
+  First byte: 0x54
+  Test completed successfully
+
+Testing last byte of small file:
+  File: small.txt, Offset: 83, Length: 1
+  Actual length   : 1 bytes
+  Mapped length   : 84 bytes
+  Mapping offset  : 83
+  SUCCESS: Data pointer is valid
+  First byte: 0x0a
+  Test completed successfully
+
+Testing file range mapping error cases:
+  Test 1: Offset beyond file size
+    SUCCESS: Failed as expected for offset beyond file size
+  Test 2: Zero length mapping
+    SUCCESS: Zero length mapping succeeded, actual length: 0
+  Error case tests completed
+
+=== All File Range Mapping Tests Completed ===

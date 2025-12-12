@@ -1,0 +1,124 @@
+<h1 id="file-mapping-tests-section-2">File Mapping Tests (Section 2)</h1>
+<p>This directory contains comprehensive tests for the file mapping functionality of mulle-mmap, implementing section 2 of the TEST_IMPLEMENTATION.md plan.</p>
+<h2 id="test-files">Test Files</h2>
+<h3 id="core-test-files">Core Test Files</h3>
+<ol>
+<li>
+<p><strong>test.c</strong> - Basic File Mapping Tests (Tests 20-24)</p>
+<ul>
+<li>Tests <code>_mulle_mmap_map_file()</code> with various file sizes</li>
+<li>Tests mapping empty, small, medium, large, and binary files</li>
+<li>Tests error handling for non-existent files</li>
+<li>Verifies state functions and data access</li>
+</ul>
+</li>
+<li>
+<p><strong>test_range.c</strong> - File Range Mapping Tests (Test 21)</p>
+<ul>
+<li>Tests <code>_mulle_mmap_map_file_range()</code> with different offsets/lengths</li>
+<li>Tests range mapping with SIZE_MAX</li>
+<li>Tests boundary conditions and error cases</li>
+<li>Verifies correct length truncation and offset handling</li>
+</ul>
+</li>
+<li>
+<p><strong>test_handle.c</strong> - Handle-Based Mapping Tests (Tests 25-27)</p>
+<ul>
+<li>Tests <code>_mulle_mmap_map()</code> with file handles</li>
+<li>Tests <code>_mulle_mmap_map_range()</code> with handles</li>
+<li>Tests external handle management</li>
+<li>Tests error handling with invalid handles</li>
+</ul>
+</li>
+<li>
+<p><strong>test_edge_cases.c</strong> - Edge Cases and Alignment Tests (Tests 28-31)</p>
+<ul>
+<li>Tests various unaligned offsets</li>
+<li>Tests different length parameters including edge values</li>
+<li>Tests boundary conditions (offset beyond file, length extending beyond file)</li>
+<li>Tests page boundary alignments and data alignment</li>
+</ul>
+</li>
+</ol>
+<h3 id="test-data-files">Test Data Files</h3>
+<ul>
+<li><strong>empty.txt</strong> - 0 bytes (empty file)</li>
+<li><strong>small.txt</strong> - 84 bytes (small text file)</li>
+<li><strong>medium.txt</strong> - 4096 bytes (one page, random data)</li>
+<li><strong>large.txt</strong> - 16384 bytes (four pages, random data)</li>
+<li><strong>binary.dat</strong> - 512 bytes (binary data, random)</li>
+</ul>
+<p>All data files use random data from <code>/dev/urandom</code> to avoid OS optimizations for zero-filled pages.</p>
+<h2 id="test-coverage">Test Coverage</h2>
+<p>This test suite covers:</p>
+<h3 id="basic-file-mapping--complete">Basic File Mapping (✅ Complete)</h3>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> <code>_mulle_mmap_map_file()</code> with various file sizes</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> Empty file mapping</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> Small file mapping (&lt; page size)</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> Medium file mapping (= page size)</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> Large file mapping (&gt; page size)</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> Binary file mapping</li>
+</ul>
+<h3 id="range-mapping--complete">Range Mapping (✅ Complete)</h3>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> <code>_mulle_mmap_map_file_range()</code> with different offsets/lengths</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> Mapping entire file with explicit range</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> Mapping specific byte ranges</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> Mapping with SIZE_MAX length</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> Error cases (offset beyond file, etc.)</li>
+</ul>
+<h3 id="handle-based-mapping--complete">Handle-Based Mapping (✅ Complete)</h3>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> <code>_mulle_mmap_map()</code> with file handles</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> <code>_mulle_mmap_map_range()</code> with handles</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> External handle management</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> Invalid handle error handling</li>
+</ul>
+<h3 id="edge-cases-and-alignment--complete">Edge Cases and Alignment (✅ Complete)</h3>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> Unaligned offsets (1, 3, 17, 63, 127, 255, 511, 1023, etc.)</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> Various length parameters (1-8191 bytes)</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> Boundary conditions (end of file, beyond file)</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> Page boundary alignments</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> Offset/length combinations</li>
+</ul>
+<h3 id="state-verification--complete">State Verification (✅ Complete)</h3>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> <code>_mulle_mmap_is_open()</code></li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> <code>_mulle_mmap_is_mapped()</code></li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> <code>_mulle_mmap_get_length()</code></li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> <code>_mulle_mmap_get_mapped_length()</code></li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> <code>_mulle_mmap_get_mapping_offset()</code></li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> <code>_mulle_mmap_get_bytes()</code></li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> <code>_mulle_mmap_get_file_handle()</code></li>
+</ul>
+<h2 id="running-tests">Running Tests</h2>
+<p>To run individual test files:</p>
+<pre><code class="language-bash">mulle-sde <span class="hljs-built_in">test</span> run test.c
+mulle-sde <span class="hljs-built_in">test</span> run test_range.c  
+mulle-sde <span class="hljs-built_in">test</span> run test_handle.c
+mulle-sde <span class="hljs-built_in">test</span> run test_edge_cases.c
+</code></pre>
+<p>To run all file mapping tests:</p>
+<pre><code class="language-bash">mulle-sde <span class="hljs-built_in">test</span> run 20_file_mapping/
+</code></pre>
+<h2 id="expected-behavior">Expected Behavior</h2>
+<p>All tests should pass and demonstrate:</p>
+<ol>
+<li><strong>Correct Memory Mapping</strong>: Files are properly mapped into memory with valid pointers</li>
+<li><strong>State Management</strong>: All state query functions return expected values</li>
+<li><strong>Error Handling</strong>: Invalid operations fail gracefully with appropriate error codes</li>
+<li><strong>Resource Cleanup</strong>: All resources are properly released after use</li>
+<li><strong>Alignment Handling</strong>: Unaligned offsets are handled correctly by the OS/implementation</li>
+<li><strong>Boundary Conditions</strong>: Edge cases are handled without crashes or undefined behavior</li>
+</ol>
+<h2 id="implementation-notes">Implementation Notes</h2>
+<ul>
+<li>Tests use random data to avoid OS optimizations for zero-filled pages</li>
+<li>Page size is dynamically determined using <code>mulle_mmap_get_system_pagesize()</code></li>
+<li>Tests verify both successful operations and expected failures</li>
+<li>Memory alignment and mapping offsets are checked where relevant</li>
+<li>File handle management is tested for both internal and external handles</li>
+</ul>
+<p>These tests provide comprehensive coverage of the file mapping functionality and serve as regression tests for future development.</p>

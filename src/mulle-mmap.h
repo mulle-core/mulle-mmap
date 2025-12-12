@@ -189,11 +189,16 @@ static inline mulle_mmap_file_t
  */
 
 // System page size - platform specific implementation
+MULLE__MMAP_GLOBAL
 size_t   mulle_mmap_get_system_pagesize( void);
 
 // File operations - platform specific implementations  
-mulle_mmap_file_t   mulle_mmap_file_open( char *path, enum mulle_mmap_accessmode mode);
-int64_t             mulle_mmap_file_query_size( mulle_mmap_file_t handle);
+MULLE__MMAP_GLOBAL
+mulle_mmap_file_t   mulle_mmap_file_open( char *path,
+                                          enum mulle_mmap_accessmode mode);
+
+MULLE__MMAP_GLOBAL
+int64_t   mulle_mmap_file_query_size( mulle_mmap_file_t handle);
 
 // Memory mapping result structure (needs to handle Windows mapping handle)
 struct mulle_mmap_result
@@ -207,6 +212,7 @@ struct mulle_mmap_result
 };
 
 // Core memory mapping - platform specific implementation
+MULLE__MMAP_GLOBAL
 int   mulle_mmap_memory_map( mulle_mmap_file_t handle,
                             int64_t offset,
                             int64_t length,
@@ -214,32 +220,19 @@ int   mulle_mmap_memory_map( mulle_mmap_file_t handle,
                             struct mulle_mmap_result *ctx);
 
 // Synchronization - platform specific implementations (low-level, no checking)
+MULLE__MMAP_GLOBAL
 MULLE_C_NONNULL_FIRST
 int   _mulle_mmap_sync( struct mulle_mmap *p);
 
 // Unmapping - platform specific implementations (low-level, no checking)  
-MULLE_C_NONNULL_FIRST
-int   _mulle_mmap_unmap( struct mulle_mmap *p);
-
-// Page allocation - platform specific implementations
-void   *mulle_mmap_alloc_pages( size_t size);
-void   *mulle_mmap_alloc_shared_pages( size_t size);
-
 MULLE__MMAP_GLOBAL
 MULLE_C_NONNULL_FIRST
-int    _mulle_mmap_free_pages( void *p, size_t size);
-
-
-
-// Platform-specific state queries (low-level, no checking)
-MULLE_C_NONNULL_FIRST
-int   _mulle_mmap_is_mapped( struct mulle_mmap *p);
-
-
+int   _mulle_mmap_unmap( struct mulle_mmap *p);
 
 /*
  * A little additional interface to just get pages from the OS.
  */
+
 //
 // size should probably be a multiple of pagesize. It is known that the
 // returned pages are zero filled!
@@ -247,14 +240,6 @@ int   _mulle_mmap_is_mapped( struct mulle_mmap *p);
 MULLE__MMAP_GLOBAL
 void   *mulle_mmap_alloc_pages( size_t size);
 // free with this
-
-static inline 
-int     mulle_mmap_free_pages( void *p, size_t size)
-{
-   if( ! p)
-      return( 0);
-   return( _mulle_mmap_free_pages( p, size));
-}
 
 
 /* like mulle_mmap_alloc_pages but produces shared memory pages instead
@@ -268,6 +253,21 @@ static inline int   _mulle_mmap_is_open( struct mulle_mmap *p)
 {
    return( p->file_handle_ != MULLE_MMAP_INVALID_HANDLE);
 }
+
+
+MULLE__MMAP_GLOBAL
+MULLE_C_NONNULL_FIRST
+int    _mulle_mmap_free_pages( void *p, size_t size);
+
+
+static inline
+int     mulle_mmap_free_pages( void *p, size_t size)
+{
+   if( ! p)
+      return( 0);
+   return( _mulle_mmap_free_pages( p, size));
+}
+
 
 static inline int   mulle_mmap_is_open( struct mulle_mmap *p)
 {
@@ -307,7 +307,9 @@ static inline int   mulle_mmap_is_writable( struct mulle_mmap *p)
 }
 
 
+// Platform-specific state queries (low-level, no checking)
 MULLE__MMAP_GLOBAL
+MULLE_C_NONNULL_FIRST
 int   _mulle_mmap_is_mapped( struct mulle_mmap *p);
 
 /**

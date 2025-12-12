@@ -1,0 +1,81 @@
+=== Shared Page Allocation Tests ===
+
+These tests verify mulle_mmap_alloc_shared_pages() functionality:
+1. Basic shared page allocation and deallocation
+2. Shared memory between parent and child processes
+3. Multiple shared page allocation
+
+=== Test: Shared Page Allocation ===
+
+System page size: 4096 bytes
+Phase 1: Allocating shared page
+  SUCCESS: Allocated shared 4096 bytes
+Phase 2: Testing zero-filled guarantee
+  SUCCESS: All 4096 bytes are zero-filled
+Phase 3: Testing write access
+  SUCCESS: Shared page is writable and readable
+Phase 4: Freeing shared page
+  SUCCESS: Shared page freed successfully
+Test completed successfully
+
+=== Test: Shared Pages Between Parent and Child Process ===
+
+System page size: 4096 bytes
+Phase 1: Allocating shared page in parent
+  SUCCESS: Allocated shared page
+  Parent initialized shared memory with pattern: 0x12, 0x34, ..., 0x56, 0x78
+Phase 2: Forking child process
+  CHILD: Checking shared memory content
+  CHILD: SUCCESS - Can read parent's data from shared memory
+  CHILD: Modified shared memory (added 0xAB, 0xCD, 0xEF)
+  CHILD: Exiting
+=== Shared Page Allocation Tests ===
+
+These tests verify mulle_mmap_alloc_shared_pages() functionality:
+1. Basic shared page allocation and deallocation
+2. Shared memory between parent and child processes
+3. Multiple shared page allocation
+
+=== Test: Shared Page Allocation ===
+
+System page size: 4096 bytes
+Phase 1: Allocating shared page
+  SUCCESS: Allocated shared 4096 bytes
+Phase 2: Testing zero-filled guarantee
+  SUCCESS: All 4096 bytes are zero-filled
+Phase 3: Testing write access
+  SUCCESS: Shared page is writable and readable
+Phase 4: Freeing shared page
+  SUCCESS: Shared page freed successfully
+Test completed successfully
+
+=== Test: Shared Pages Between Parent and Child Process ===
+
+System page size: 4096 bytes
+Phase 1: Allocating shared page in parent
+  SUCCESS: Allocated shared page
+  Parent initialized shared memory with pattern: 0x12, 0x34, ..., 0x56, 0x78
+Phase 2: Forking child process
+  PARENT: Waiting for child
+  PARENT: Child completed successfully
+Phase 3: Parent checking child modifications
+  PARENT: SUCCESS - Can see child's modifications in shared memory
+  Shared memory is working correctly between processes
+Phase 4: Cleanup
+  SUCCESS: Shared page freed
+Test completed successfully
+
+=== Test: Multiple Shared Pages ===
+
+Allocating 3 shared pages (12288 bytes total)
+Phase 1: Allocating multiple shared pages
+  SUCCESS: Allocated 12288 shared bytes
+Phase 2: Testing zero-filled guarantee across all shared pages
+  SUCCESS: All 12288 bytes across 3 shared pages are zero-filled
+Phase 3: Testing write access across all shared pages
+  SUCCESS: All 3 shared pages are writable and readable
+Phase 4: Freeing shared pages
+  SUCCESS: Shared pages freed successfully
+Test completed successfully
+
+=== All Shared Page Allocation Tests Completed ===

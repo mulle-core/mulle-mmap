@@ -50,13 +50,13 @@ static void test_partial_unmap_three_pages( void)
    memset( page3, 0xCC, page_size);
    
    // Verify patterns were written
-   if( page1[0] == 0xAA && page1[page_size-1] == 0xAA &&
-       page2[0] == 0xBB && page2[page_size-1] == 0xBB &&
-       page3[0] == 0xCC && page3[page_size-1] == 0xCC)
+   if( (unsigned char)page1[0] == 0xAA && (unsigned char)page1[page_size-1] == 0xAA &&
+       (unsigned char)page2[0] == 0xBB && (unsigned char)page2[page_size-1] == 0xBB &&
+       (unsigned char)page3[0] == 0xCC && (unsigned char)page3[page_size-1] == 0xCC)
    {
       printf( "  SUCCESS: Patterns written to all 3 pages\n");
       printf( "    Page 1: 0x%02X, Page 2: 0x%02X, Page 3: 0x%02X\n", 
-              page1[0], page2[0], page3[0]);
+              (unsigned char)page1[0], (unsigned char)page2[0], (unsigned char)page3[0]);
    }
    else
    {
@@ -96,7 +96,7 @@ static void test_partial_unmap_three_pages( void)
    page1[100] = 0xDD;
    page3[100] = 0xEE;
    
-   if( page1[100] == 0xDD && page3[100] == 0xEE)
+   if( (unsigned char)page1[100] == 0xDD && (unsigned char)page3[100] == 0xEE)
    {
       printf( "  SUCCESS: Remaining pages are still writable\n");
    }

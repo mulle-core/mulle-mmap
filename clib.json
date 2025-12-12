@@ -17,6 +17,6 @@
       "src/reflect/_mulle-mmap-versioncheck.h"
    ],
    "dependencies" : {
-      "mulle-c/mulle-c11": "*"
+      "mulle-c/mulle-allocator": "*"
    }
 }

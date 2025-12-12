@@ -1,0 +1,28 @@
+Testing mulle-mmap file mapping behavior
+========================================
+
+=== Test: Read-only File Mapping ===
+
+Created test file with content: 'Hello, readonly mapping test!'
+
+Phase 1: Read-only mapping
+  SUCCESS: Mapped file read-only
+  First byte: 'H' (0x48)
+  Mapped length: 30 bytes
+  SUCCESS: Unmapped file
+
+Phase 2: Read-write mapping
+  SUCCESS: Mapped file read-write
+  Original first byte: 'H' (0x48)
+  Writing to read-write mapping...
+  Write succeeded
+  First byte after write: 'X' (0x58)
+  SUCCESS: Unmapped file
+
+Phase 3: Verifying file modification
+  File content after read-write mapping: 'Xello, readonly mapping test!'
+  File was modified
+
+Test completed
+
+All tests completed

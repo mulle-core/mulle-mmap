@@ -1,0 +1,86 @@
+=== Handle-Based Mapping Tests ===
+
+Testing empty file via handle (empty.txt):
+  Opened file with handle: 3
+  File size      : 0 bytes
+  Mapped length  : 0 bytes
+  Mapping offset : 0
+  Stored handle  : 3
+  Empty file - data pointer may be NULL
+  Test completed successfully
+
+Testing small file via handle (small.txt):
+  Opened file with handle: 3
+  File size      : 84 bytes
+  Mapped length  : 84 bytes
+  Mapping offset : 0
+  Stored handle  : 3
+  SUCCESS: Data pointer is valid
+  First byte: 0x54
+  Last byte : 0x0a
+  Test completed successfully
+
+Testing medium file via handle (medium.txt):
+  Opened file with handle: 3
+  File size      : 4096 bytes
+  Mapped length  : 4096 bytes
+  Mapping offset : 0
+  Stored handle  : 3
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing large file via handle (large.txt):
+  Opened file with handle: 3
+  File size      : 16384 bytes
+  Mapped length  : 16384 bytes
+  Mapping offset : 0
+  Stored handle  : 3
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing binary file via handle (binary.dat):
+  Opened file with handle: 3
+  File size      : 512 bytes
+  Mapped length  : 512 bytes
+  Mapping offset : 0
+  Stored handle  : 3
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing handle range mapping: first 1024 bytes:
+  File: medium.txt, Handle mapping, Offset: 0, Length: 1024
+  Actual length   : 1024 bytes
+  Mapped length   : 1024 bytes
+  Mapping offset  : 0
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing handle range mapping: bytes 1024-3071:
+  File: medium.txt, Handle mapping, Offset: 1024, Length: 2048
+  Actual length   : 2048 bytes
+  Mapped length   : 3072 bytes
+  Mapping offset  : 1024
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing handle range mapping: second page:
+  File: large.txt, Handle mapping, Offset: 4096, Length: 4096
+  Actual length   : 4096 bytes
+  Mapped length   : 4096 bytes
+  Mapping offset  : 0
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing handle range mapping: middle section:
+  File: binary.dat, Handle mapping, Offset: 100, Length: 300
+  Actual length   : 300 bytes
+  Mapped length   : 400 bytes
+  Mapping offset  : 100
+  SUCCESS: Data pointer is valid
+  Test completed successfully
+
+Testing mapping with invalid handle:
+  SUCCESS: Mapping with invalid handle failed as expected: Bad file descriptor
+  Test completed successfully
+
+=== All Handle-Based Mapping Tests Completed ===

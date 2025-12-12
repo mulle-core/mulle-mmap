@@ -26,8 +26,8 @@ static void test_free_null_pointer( void)
    }
    else
    {
-      printf( "  INFO: Function returned error for NULL pointer (errno: %s)\n", strerror( errno));
-      printf( "  This behavior is implementation-dependent\n");
+      printf( "  ERROR: Function should return 0 for NULL pointer, got %d\n", rval);
+      return;
    }
    
    printf( "Test completed\n\n");
@@ -125,7 +125,7 @@ static void test_double_free( void)
       return;
    }
    
-   printf( "  SUCCESS: Allocated %zu bytesn", page_size);
+   printf( "  SUCCESS: Allocated %zu bytes\n", page_size);
    
    printf( "Phase 2: First free\n");
    

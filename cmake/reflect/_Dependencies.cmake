@@ -12,35 +12,75 @@ if( MULLE_TRACE_INCLUDE)
 endif()
 
 #
-# Generated from sourcetree: 360388C4-28A5-43B9-B5DE-858CE8E4A9BA;mulle-c11;no-all-load,no-cmake-inherit,no-import,no-link,no-recurse,no-singlephase;
-# Disable with : `mulle-sourcetree mark mulle-c11 no-header`
-# Disable for this platform: `mulle-sourcetree mark mulle-c11 no-cmake-platform-${MULLE_UNAME}`
-# Disable for a sdk: `mulle-sourcetree mark mulle-c11 no-cmake-sdk-<name>`
+# Generated from sourcetree: 974D6E5B-5644-44A3-B15B-DB2B66107A03;mulle-allocator;no-all-load,no-cmake-loader,no-cmake-searchpath,no-import;
+# Disable with : `mulle-sourcetree mark mulle-allocator no-link`
+# Disable for this platform: `mulle-sourcetree mark mulle-allocator no-cmake-platform-${MULLE_UNAME}`
+# Disable for a sdk: `mulle-sourcetree mark mulle-allocator no-cmake-sdk-<name>`
 #
-if( NOT MULLE__C11_HEADER)
-   find_file( MULLE__C11_HEADER NAMES
-      mulle-c11.h mulle-c11/mulle-c11.h
-      NO_CMAKE_SYSTEM_PATH NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_FIND_ROOT_PATH
-   )
-   if( NOT MULLE__C11_HEADER AND NOT DEPENDENCY_IGNORE_SYSTEM_HEADERS)
-      find_file( MULLE__C11_HEADER NAMES
-         mulle-c11.h mulle-c11/mulle-c11.h
+if( COLLECT_DEPENDENCY_LIBRARIES_AS_NAMES)
+   list( APPEND DEPENDENCY_LIBRARIES "mulle-allocator")
+else()
+   if( NOT MULLE__ALLOCATOR_LIBRARY)
+      find_library( MULLE__ALLOCATOR_LIBRARY NAMES
+         ${CMAKE_STATIC_LIBRARY_PREFIX}mulle-allocator${CMAKE_DEBUG_POSTFIX}${CMAKE_STATIC_LIBRARY_SUFFIX}
+         ${CMAKE_STATIC_LIBRARY_PREFIX}mulle-allocator${CMAKE_STATIC_LIBRARY_SUFFIX}
+         mulle-allocator
+         NO_CMAKE_SYSTEM_PATH NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_FIND_ROOT_PATH
       )
-   endif()
-   message( STATUS "MULLE__C11_HEADER is ${MULLE__C11_HEADER}")
-
-   #
-   # Add MULLE__C11_HEADER to HEADER_ONLY_LIBRARIES list.
-   # Disable with: `mulle-sourcetree mark mulle-c11 no-cmake-add`
-   #
-   set( HEADER_ONLY_LIBRARIES
-      ${MULLE__C11_HEADER}
-      ${HEADER_ONLY_LIBRARIES}
-   )
-   if( MULLE__C11_HEADER)
-      # intentionally left blank
-   else()
-      # Disable with: `mulle-sourcetree mark mulle-c11 no-require`
-      message( SEND_ERROR "MULLE__C11_HEADER was not found in mulle-c11.h mulle-c11/mulle-c11.h")
+      if( NOT MULLE__ALLOCATOR_LIBRARY AND NOT DEPENDENCY_IGNORE_SYSTEM_LIBARIES)
+         find_library( MULLE__ALLOCATOR_LIBRARY NAMES
+            ${CMAKE_STATIC_LIBRARY_PREFIX}mulle-allocator${CMAKE_DEBUG_POSTFIX}${CMAKE_STATIC_LIBRARY_SUFFIX}
+            ${CMAKE_STATIC_LIBRARY_PREFIX}mulle-allocator${CMAKE_STATIC_LIBRARY_SUFFIX}
+            mulle-allocator
+         )
+      endif()
+      message( STATUS "MULLE__ALLOCATOR_LIBRARY is ${MULLE__ALLOCATOR_LIBRARY}")
+      #
+      # The order looks ascending, but due to the way this file is read
+      # it ends up being descending, which is what we need.
+      #
+      if( MULLE__ALLOCATOR_LIBRARY)
+         #
+         # Add MULLE__ALLOCATOR_LIBRARY to DEPENDENCY_LIBRARIES list.
+         # Disable with: `mulle-sourcetree mark mulle-allocator no-cmake-add`
+         #
+         list( APPEND DEPENDENCY_LIBRARIES ${MULLE__ALLOCATOR_LIBRARY})
+         #
+         # Inherit information from dependency.
+         # Encompasses: no-cmake-searchpath,no-cmake-dependency,no-cmake-loader
+         # Disable with: `mulle-sourcetree mark mulle-allocator no-cmake-inherit`
+         #
+         # temporarily expand CMAKE_MODULE_PATH
+         get_filename_component( _TMP_MULLE__ALLOCATOR_ROOT "${MULLE__ALLOCATOR_LIBRARY}" DIRECTORY)
+         get_filename_component( _TMP_MULLE__ALLOCATOR_ROOT "${_TMP_MULLE__ALLOCATOR_ROOT}" DIRECTORY)
+         #
+         #
+         # Search for "Definitions.cmake" and "DependenciesAndLibraries.cmake" to include.
+         # Disable with: `mulle-sourcetree mark mulle-allocator no-cmake-dependency`
+         #
+         foreach( _TMP_MULLE__ALLOCATOR_NAME "mulle-allocator")
+            set( _TMP_MULLE__ALLOCATOR_DIR "${_TMP_MULLE__ALLOCATOR_ROOT}/include/${_TMP_MULLE__ALLOCATOR_NAME}/cmake")
+            # use explicit path to avoid "surprises"
+            if( IS_DIRECTORY "${_TMP_MULLE__ALLOCATOR_DIR}")
+               list( INSERT CMAKE_MODULE_PATH 0 "${_TMP_MULLE__ALLOCATOR_DIR}")
+               #
+               include( "${_TMP_MULLE__ALLOCATOR_DIR}/DependenciesAndLibraries.cmake" OPTIONAL)
+               #
+               list( REMOVE_ITEM CMAKE_MODULE_PATH "${_TMP_MULLE__ALLOCATOR_DIR}")
+               #
+               unset( MULLE__ALLOCATOR_DEFINITIONS)
+               include( "${_TMP_MULLE__ALLOCATOR_DIR}/Definitions.cmake" OPTIONAL)
+               list( APPEND INHERITED_DEFINITIONS ${MULLE__ALLOCATOR_DEFINITIONS})
+               break()
+            else()
+               message( STATUS "${_TMP_MULLE__ALLOCATOR_DIR} not found")
+            endif()
+         endforeach()
+      else()
+         # Disable with: `mulle-sourcetree mark mulle-allocator no-require-link`
+         message( SEND_ERROR "MULLE__ALLOCATOR_LIBRARY was not found in ${CMAKE_STATIC_LIBRARY_PREFIX}mulle-allocator${CMAKE_DEBUG_POSTFIX}${CMAKE_STATIC_LIBRARY_SUFFIX}
+${CMAKE_STATIC_LIBRARY_PREFIX}mulle-allocator${CMAKE_STATIC_LIBRARY_SUFFIX}
+mulle-allocator")
+      endif()
    endif()
 endif()

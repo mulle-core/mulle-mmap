@@ -132,7 +132,7 @@ static void test_boundary_conditions( void)
    rval = _mulle_mmap_map_file_range( &info, "large.txt", file_size, 100);
    if( rval)
    {
-      printf( "    SUCCESS: Failed as expected for offset at end of file: %s\n", strerror( errno));
+      printf( "    SUCCESS: Failed as expected for offset at end of file (error code: %d)\n", rval);
    }
    else
    {
@@ -146,7 +146,7 @@ static void test_boundary_conditions( void)
    rval = _mulle_mmap_map_file_range( &info, "large.txt", file_size + 1000, 100);
    if( rval)
    {
-      printf( "    SUCCESS: Failed as expected for offset beyond file: %s\n", strerror( errno));
+      printf( "    SUCCESS: Failed as expected for offset beyond file (error code: %d)\n", rval);
    }
    else
    {
@@ -160,7 +160,7 @@ static void test_boundary_conditions( void)
    rval = _mulle_mmap_map_file_range( &info, "large.txt", file_size - 1000, 2000);
    if( rval)
    {
-      printf( "    Failed: %s\n", strerror( errno));
+      printf( "    Failed with error code: %d\n", rval);
    }
    else
    {
@@ -175,7 +175,7 @@ static void test_boundary_conditions( void)
    rval = _mulle_mmap_map_file_range( &info, "large.txt", file_size - 1, 1);
    if( rval)
    {
-      printf( "    Failed: %s\n", strerror( errno));
+      printf( "    Failed with error code: %d\n", rval);
    }
    else
    {

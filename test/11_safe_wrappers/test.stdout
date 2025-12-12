@@ -1,0 +1,12 @@
+Testing safe public wrapper functions with NULL checking
+Testing NULL pointer safety:
+mulle_mmap_sync(NULL) returned: -1 (expected: -1)
+mulle_mmap_unmap(NULL) returned: -1 (expected: -1)
+mulle_mmap_is_mapped(NULL) returned: 0 (expected: 0)
+mulle_mmap_conditional_sync(NULL) returned: -1 (expected: -1)
+
+Testing with valid uninitialized struct:
+mulle_mmap_sync(&info) returned: -1 (expected: -1, unmapped)
+mulle_mmap_is_mapped(&info) returned: 0 (expected: 0, not mapped)
+
+All safe wrapper tests completed successfully.
