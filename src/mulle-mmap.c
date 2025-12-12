@@ -31,29 +31,6 @@ uint32_t   mulle_mmap_get_version( void)
    return( MULLE__MMAP_VERSION);
 }
 
-/**
- * Aligns `offset` to the operating system page size such that it subtracts the
- * difference until the nearest lower page boundary before `offset`, or does
- * nothing if `offset` is already page aligned.
- */
-static inline size_t   mulle_mmap_pagealign_offset( size_t offset)
-{
-    size_t page_size;
-
-    page_size = mulle_mmap_get_system_pagesize();
-    return( (offset / page_size) * page_size);
-}
-
-static inline void   *_mulle_mmap_get_mapping_start( struct mulle_mmap *p)
-{
-   char   *data;
-
-   data = _mulle_mmap_get_bytes( p);
-   if( data)
-      data -= _mulle_mmap_get_mapping_offset( p);
-   return( data);
-}
-
 // Platform-specific helper functions are now in platform files
 
 // -- mulle_mmap --

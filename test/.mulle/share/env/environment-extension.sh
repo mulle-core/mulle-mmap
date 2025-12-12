@@ -35,3 +35,16 @@ export MULLE_MATCH_FIND_NAMES="*.environment,*.args,*.stdout,*.stdin,*.stderr,*.
 export MULLE_FETCH_SEARCH_PATH="${MULLE_FETCH_SEARCH_PATH}:${MULLE_VIRTUAL_ROOT}/../.."
 
 
+#
+# tests don't need a graveyard
+#
+export MULLE_SOURCETREE_GRAVEYARD_ENABLED="NO"
+
+
+#
+# For new projects its better to keep this on "ignore" first, and then change
+# it to "warn" or "error" later
+#
+export MULLE_TEST_WHITESPACE_DIFFERENCES="ignore"
+
+

@@ -92,59 +92,66 @@ mulle_mmap_free_pages(page3, page_size);
 ### Basic File Reading
 
 ```c
-struct mulle_mmap info;
+struct mulle_mmap   info;
+char                *bytes;
+size_t              size;
 
 // Initialize for read-only access
-_mulle_mmap_init(&info, mulle_mmap_read);
+_mulle_mmap_init(&info, mulle_mmap_read|mulle_mmap_no_unmap);
 
 // Map entire file
-if (_mulle_mmap_map_file(&info, "data.txt") == 0) {
-    char *data = _mulle_mmap_get_data(&info);
-    size_t size = _mulle_mmap_get_length(&info);
+if( mulle_mmap_map_file(&info, "data.txt") == 0)
+{
+    bytes = _mulle_mmap_get_bytes( &info);
+    size  = _mulle_mmap_get_length( &info);
     
     // Use the mapped data (no need to read() or malloc)
-    printf("File content: %.*s\n", (int)size, data);
+    printf("File content: %.*s\n", (int) size, bytes);
     
-    // Cleanup
-    _mulle_mmap_done(&info);
+    // Cleanup (but keeps memory alive due to `mulle_mmap_no_unmap`)
+    mulle_mmap_done( &info);
 }
 ```
 
 ### File Writing with Memory Mapping
 
 ```c
-struct mulle_mmap info;
+struct mulle_mmap   info;
+char                *bytes;
 
 // Initialize for read-write access
 _mulle_mmap_init(&info, mulle_mmap_write);
 
 // Map file for writing
-if (_mulle_mmap_map_file(&info, "output.txt") == 0) {
-    char *data = _mulle_mmap_get_data(&info);
+if( mulle_mmap_map_file(&info, "output.txt") == 0)
+{
+    bytes = _mulle_mmap_get_bytes(&info);
     
     // Modify data directly in memory
-    strcpy(data, "New content written via mmap");
+    strcpy( bytes, "New content written via mmap");
     
     // Changes are automatically written to file on cleanup
-    _mulle_mmap_done(&info);
+    mulle_mmap_done( &info);
 }
 ```
 
 ### Range Mapping
 
 ```c
-struct mulle_mmap info;
+struct mulle_mmap   info;
+char                *bytes;
 
 _mulle_mmap_init(&info, mulle_mmap_read);
 
 // Map only part of a file (offset 1024, length 4096 bytes)
-if (_mulle_mmap_map_file_range(&info, "large_file.dat", 1024, 4096) == 0) {
-    char *data = _mulle_mmap_get_data(&info);
+if( mulle_mmap_map_file_range(&info, "large_file.dat", 1024, 4096) == 0)
+{
+    bytes = mulle_mmap_get_bytes(&info);
     
     // Process just this portion of the file
-    process_data(data, 4096);
+    process_data( bytes, 4096);
     
-    _mulle_mmap_done(&info);
+    mulle_mmap_done( &info);
 }
 ```
 

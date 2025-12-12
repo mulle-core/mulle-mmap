@@ -251,8 +251,9 @@ void   *mulle_mmap_alloc_pages( size_t size);
 static inline 
 int     mulle_mmap_free_pages( void *p, size_t size)
 {
-   if( p)
-      return( _mulle_mmap_free_pages( p, size));
+   if( ! p)
+      return( 0);
+   return( _mulle_mmap_free_pages( p, size));
 }
 
 
