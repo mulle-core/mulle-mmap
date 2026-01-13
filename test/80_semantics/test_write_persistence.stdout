@@ -18,12 +18,12 @@ Reading file content with fopen: write_persistence_test.txt
   File reading completed
 
 Phase 2: Opening file for read/write mapping
-  Opened file with descriptor: 3
+  File opened successfully
   File mapped successfully for read/write
   Current mapped content: "VfL Bochum 1848"
 
 Phase 3: Closing file descriptor while keeping mapping
-  File descriptor 3 closed
+  File descriptor closed
   SUCCESS: mmap still reports as mapped and writable after fd close
 
 Phase 4: Modifying mapped memory after file descriptor close

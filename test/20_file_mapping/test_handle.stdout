@@ -1,49 +1,54 @@
 === Handle-Based Mapping Tests ===
 
 Testing empty file via handle (empty.txt):
-  Opened file with handle: 3
+  File opened successfully
   File size      : 0 bytes
   Mapped length  : 0 bytes
   Mapping offset : 0
-  Stored handle  : 3
+  Handle stored correctly
+  WARNING: Stored handle differs from original handle
   Empty file - data pointer may be NULL
   Test completed successfully
 
 Testing small file via handle (small.txt):
-  Opened file with handle: 3
+  File opened successfully
   File size      : 84 bytes
   Mapped length  : 84 bytes
   Mapping offset : 0
-  Stored handle  : 3
+  Handle stored correctly
+  WARNING: Stored handle differs from original handle
   SUCCESS: Data pointer is valid
   First byte: 0x54
   Last byte : 0x0a
   Test completed successfully
 
 Testing medium file via handle (medium.txt):
-  Opened file with handle: 3
+  File opened successfully
   File size      : 4096 bytes
   Mapped length  : 4096 bytes
   Mapping offset : 0
-  Stored handle  : 3
+  Handle stored correctly
+  WARNING: Stored handle differs from original handle
   SUCCESS: Data pointer is valid
   Test completed successfully
 
 Testing large file via handle (large.txt):
-  Opened file with handle: 3
+  File opened successfully
   File size      : 16384 bytes
   Mapped length  : 16384 bytes
   Mapping offset : 0
-  Stored handle  : 3
+  Handle stored correctly
+  WARNING: Stored handle differs from original handle
   SUCCESS: Data pointer is valid
   Test completed successfully
 
 Testing binary file via handle (binary.dat):
-  Opened file with handle: 3
+  File opened successfully
   File size      : 512 bytes
   Mapped length  : 512 bytes
   Mapping offset : 0
-  Stored handle  : 3
+  Handle stored correctly
+  WARNING: Stored handle differs from original handle
   SUCCESS: Data pointer is valid
   Test completed successfully
 

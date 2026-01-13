@@ -1,51 +1,19 @@
-### 0.2.5
-
-Various small improvements
-
-### 0.2.4
-
-Various small improvements
-
-### 0.2.3
-
-Various small improvements
-
-### 0.2.2
-
-* Various small improvements
-
-### 0.2.1
-
-* remove package.json as it conflicts with clib.json
-* fix for zero byte files
-
-## 0.2.0
-
-* use VirtualAlloc to allocate shared memory
+### 0.2.6
 
 
-### 0.1.2
 
-* change GLOBALs for Windows
-
-### 0.1.1
-
-* Various small improvements
-
-## 0.1.0
-
-* ``mulle_mmap_alloc_pages`` and ``mulle_mmap_free_pages`` added
+* new test output files for file mapping functionality
+* new test output files for memory management operations
+* added read-only mapping test with segfault handling
 
 
-### 0.0.3
 
-* move from travis to github actions, upgrade mulle-sde
-* fix files being opened O_RDONLY only on posix
+* improved readability of `mulle_mmap_free_pages` logic
 
-### 0.0.2
 
-* simplify into one header/source
 
-### 0.0.1
+* `mulle_mmap_get_data` is now `mulle_mmap_get_bytes,` since we dont return a `mulle_data` there
+* you can now add another mode `mulle_mmap_no_unmap` which is useful for reading pages in the memory and then not getting them unmapped once you call done
 
-* rewrote mio (C++) into a minimalized mulle-mmap (C)
+
+* vibe refactored to place platform code into separate files like mulle-thread does, which does wonders for readability

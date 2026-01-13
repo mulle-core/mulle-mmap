@@ -10,14 +10,14 @@ Creating test file: persistent_test.txt (284 bytes)
 Test file created successfully
 
 Phase 1: Opening file and mapping into memory
-  Opened file with descriptor: 3
+  File opened successfully
   File mapped successfully
   Mapped length: 284 bytes
   Verifying data access while file is open...
   SUCCESS: Data matches original content while file is open
 
 Phase 2: Closing file descriptor
-  File descriptor 3 closed
+  File descriptor closed
   SUCCESS: mmap still reports as mapped after fd close
 
 Phase 3: Accessing mapped memory after file descriptor close

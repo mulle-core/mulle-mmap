@@ -138,7 +138,7 @@ static void test_write_persistence_after_close( void)
       printf( "ERROR: Failed to open test file: %s\n", strerror( errno));
       return;
    }
-   printf( "  Opened file with descriptor: %d\n", fd);
+   printf( "  File opened successfully\n");
    
    // Initialize mmap structure for read/write
    _mulle_mmap_init( &info, mulle_mmap_write);
@@ -164,7 +164,7 @@ static void test_write_persistence_after_close( void)
    
    // Close the file descriptor
    close( fd);
-   printf( "  File descriptor %d closed\n", fd);
+   printf( "  File descriptor closed\n");
    
    // Verify the mapping is still valid for writing
    if( ! _mulle_mmap_is_mapped( &info))

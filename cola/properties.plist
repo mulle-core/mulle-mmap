@@ -3,6 +3,8 @@
    {
       description="🇧🇿 Memory mapped file access";
       domain="github";
+      language="c";
+      dialect="c";
       name="mulle-mmap";
       user="mulle-core";
       repo="mulle-mmap";
@@ -12,11 +14,11 @@
    dependencies =
    (
       {
-         description="🔀 Cross-platform C compiler glue (and some cpp conveniences)";
+         description="🔄 Flexible C memory allocation scheme";
          domain="github";
-         name="mulle-c11";
-         repo="mulle-c11";
-         url="https://github.com/mulle-c/mulle-c11";
+         name="mulle-allocator";
+         repo="mulle-allocator";
+         url="https://github.com/mulle-c/mulle-allocator";
          user="mulle-c";
       }
    );

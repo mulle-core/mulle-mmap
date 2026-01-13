@@ -9,7 +9,8 @@ Testing CMake-based projects and external consumer scenarios.
 test/XX-name/
 ├── CMakeLists.txt     # Test CMake configuration
 ├── test_file.c        # Test source
-└── test_file.stdout   # Expected output
+├── XX-name.exe        # Produced test file from cmake (always XX-name.exe)
+└── default.stdout     # Expected output
 ```
 
 ## Regular Tests
@@ -17,7 +18,6 @@ test/XX-name/
 - Use `include.h` for dependencies (auto-generated)
 - Link with `TEST_LIBRARIES` variable (passed by mulle-sde test)
 - Standard mulle-test workflow
-
 
 ### Key Variables
 

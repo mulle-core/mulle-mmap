@@ -69,7 +69,7 @@ static void test_persistent_mapping_after_close( void)
       printf( "ERROR: Failed to open test file: %s\n", strerror( errno));
       return;
    }
-   printf( "  Opened file with descriptor: %d\n", fd);
+   printf( "  File opened successfully\n");
    
    // Initialize mmap structure
    _mulle_mmap_init( &info, mulle_mmap_read);
@@ -114,7 +114,7 @@ static void test_persistent_mapping_after_close( void)
    
    // Now close the original file descriptor
    close( fd);
-   printf( "  File descriptor %d closed\n", fd);
+   printf( "  File descriptor closed\n");
    
    // Verify the mmap structure still reports the file as mapped
    if( ! _mulle_mmap_is_mapped( &info))

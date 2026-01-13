@@ -5,21 +5,21 @@
 #ifndef mulle_mmap_versioncheck_h__
 #define mulle_mmap_versioncheck_h__
 
-#if defined( MULLE__C11_VERSION)
-# ifndef MULLE__C11_VERSION_MIN
-#  define MULLE__C11_VERSION_MIN  ((4UL << 20) | (6 << 8) | 1)
+#if defined( MULLE__ALLOCATOR_VERSION)
+# ifndef MULLE__ALLOCATOR_VERSION_MIN
+#  define MULLE__ALLOCATOR_VERSION_MIN  ((7UL << 20) | (1 << 8) | 1)
 # endif
-# ifndef MULLE__C11_VERSION_MAX
-#  define MULLE__C11_VERSION_MAX  ((5UL << 20) | (0 << 8) | 0)
+# ifndef MULLE__ALLOCATOR_VERSION_MAX
+#  define MULLE__ALLOCATOR_VERSION_MAX  ((8UL << 20) | (0 << 8) | 0)
 # endif
-# if MULLE__C11_VERSION < MULLE__C11_VERSION_MIN || MULLE__C11_VERSION >= MULLE__C11_VERSION_MAX
-#  pragma message("MULLE__C11_VERSION     is " MULLE_C_STRINGIFY_MACRO( MULLE__C11_VERSION))
-#  pragma message("MULLE__C11_VERSION_MIN is " MULLE_C_STRINGIFY_MACRO( MULLE__C11_VERSION_MIN))
-#  pragma message("MULLE__C11_VERSION_MAX is " MULLE_C_STRINGIFY_MACRO( MULLE__C11_VERSION_MAX))
-#  if MULLE__C11_VERSION < MULLE__C11_VERSION_MIN
-#   error "mulle-c11 is too old"
+# if MULLE__ALLOCATOR_VERSION < MULLE__ALLOCATOR_VERSION_MIN || MULLE__ALLOCATOR_VERSION >= MULLE__ALLOCATOR_VERSION_MAX
+#  pragma message("MULLE__ALLOCATOR_VERSION     is " MULLE_C_STRINGIFY_MACRO( MULLE__ALLOCATOR_VERSION))
+#  pragma message("MULLE__ALLOCATOR_VERSION_MIN is " MULLE_C_STRINGIFY_MACRO( MULLE__ALLOCATOR_VERSION_MIN))
+#  pragma message("MULLE__ALLOCATOR_VERSION_MAX is " MULLE_C_STRINGIFY_MACRO( MULLE__ALLOCATOR_VERSION_MAX))
+#  if MULLE__ALLOCATOR_VERSION < MULLE__ALLOCATOR_VERSION_MIN
+#   error "mulle-allocator is too old"
 #  else
-#   error "mulle-c11 is too new"
+#   error "mulle-allocator is too new"
 #  endif
 # endif
 #endif

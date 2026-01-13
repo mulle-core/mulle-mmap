@@ -207,7 +207,7 @@ Install the requirements:
 
 | Requirements                                 | Description
 |----------------------------------------------|-----------------------
-| [mulle-c11](https://github.com/mulle-c/mulle-c11)             | 🔀 Cross-platform C compiler glue (and some cpp conveniences)
+| [mulle-allocator](https://github.com/mulle-c/mulle-allocator)             | 🔄 Flexible C memory allocation scheme
 
 Download the latest [tar](https://github.com/mulle-core/mulle-mmap/archive/refs/tags/latest.tar.gz) or [zip](https://github.com/mulle-core/mulle-mmap/archive/refs/tags/latest.zip) archive and unpack it.
 
