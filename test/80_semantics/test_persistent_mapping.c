@@ -4,9 +4,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/stat.h>
+
+#ifdef _WIN32
+# include <windows.h>
+# include <sys/stat.h>
+#else
+# include <fcntl.h>
+# include <unistd.h>
+# include <sys/stat.h>
+#endif
 
 
 static void create_test_file( char *filename, char *content, size_t content_size)
@@ -42,7 +48,7 @@ static void test_persistent_mapping_after_close( void)
    char                *mapped_data;
    size_t              mapped_length;
    size_t              test_size;
-   int                 fd;
+   mulle_mmap_file_t   fd;
    int                 rval;
    size_t              i;
    
@@ -63,8 +69,13 @@ static void test_persistent_mapping_after_close( void)
    printf( "Phase 1: Opening file and mapping into memory\n");
    
    // Open file manually to get file descriptor
+#ifdef _WIN32
+   fd = CreateFileA( test_filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+   if( fd == INVALID_HANDLE_VALUE)
+#else
    fd = open( test_filename, O_RDONLY);
    if( fd == -1)
+#endif
    {
       printf( "ERROR: Failed to open test file: %s\n", strerror( errno));
       return;
@@ -79,7 +90,15 @@ static void test_persistent_mapping_after_close( void)
    if( rval)
    {
       printf( "ERROR: Failed to map file: %s\n", strerror( errno));
-      close( fd);
+#ifdef _WIN32
+      CloseHandle( fd);
+#else
+      #ifdef _WIN32
+         CloseHandle( fd);
+      #else
+         close( fd);
+      #endif
+#endif
       _mulle_mmap_done( &info);
       return;
    }
@@ -96,7 +115,11 @@ static void test_persistent_mapping_after_close( void)
    if( mapped_length != test_size)
    {
       printf( "    ERROR: Mapped length (%zu) != expected length (%zu)\n", mapped_length, test_size);
-      close( fd);
+      #ifdef _WIN32
+         CloseHandle( fd);
+      #else
+         close( fd);
+      #endif
       _mulle_mmap_done( &info);
       return;
    }
@@ -104,7 +127,11 @@ static void test_persistent_mapping_after_close( void)
    if( memcmp( mapped_data, test_content, test_size) != 0)
    {
       printf( "    ERROR: Mapped data does not match original content\n");
-      close( fd);
+      #ifdef _WIN32
+         CloseHandle( fd);
+      #else
+         close( fd);
+      #endif
       _mulle_mmap_done( &info);
       return;
    }
@@ -113,7 +140,11 @@ static void test_persistent_mapping_after_close( void)
    printf( "Phase 2: Closing file descriptor\n");
    
    // Now close the original file descriptor
-   close( fd);
+   #ifdef _WIN32
+      CloseHandle( fd);
+   #else
+      close( fd);
+   #endif
    printf( "  File descriptor closed\n");
    
    // Verify the mmap structure still reports the file as mapped

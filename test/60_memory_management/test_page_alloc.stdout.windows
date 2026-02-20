@@ -1,0 +1,114 @@
+=== Page Allocation Tests ===
+
+These tests verify mulle_mmap_alloc_pages() functionality:
+1. Single page allocation and deallocation
+2. Multiple page allocation and deallocation
+3. Various page size multiples
+4. Non-page-aligned allocation sizes
+
+=== Test: Single Page Allocation ===
+
+System page size: 65536 bytes
+Phase 1: Allocating single page
+  SUCCESS: Allocated 65536 bytes
+Phase 2: Testing zero-filled guarantee
+  SUCCESS: All 65536 bytes are zero-filled
+Phase 3: Testing write access
+  SUCCESS: Page is writable and readable
+Phase 4: Freeing page
+  SUCCESS: Page freed successfully
+Test completed successfully
+
+=== Test: Multiple Page Allocation ===
+
+Allocating 4 pages (262144 bytes total)
+Phase 1: Allocating multiple pages
+  SUCCESS: Allocated 262144 bytes
+Phase 2: Testing zero-filled guarantee across all pages
+  SUCCESS: All 262144 bytes across 4 pages are zero-filled
+Phase 3: Testing write access across all pages
+  SUCCESS: All 4 pages are writable and readable
+Phase 4: Freeing pages
+  SUCCESS: Pages freed successfully
+Test completed successfully
+
+=== Test: Various Page Size Multiples ===
+
+System page size: 65536 bytes
+
+Test 1: Allocating 1 pages (65536 bytes)
+  SUCCESS: Allocated 65536 bytes
+  SUCCESS: Pages are zero-filled
+  SUCCESS: Pages are writable
+  SUCCESS: Pages freed successfully
+
+Test 2: Allocating 2 pages (131072 bytes)
+  SUCCESS: Allocated 131072 bytes
+  SUCCESS: Pages are zero-filled
+  SUCCESS: Pages are writable
+  SUCCESS: Pages freed successfully
+
+Test 3: Allocating 3 pages (196608 bytes)
+  SUCCESS: Allocated 196608 bytes
+  SUCCESS: Pages are zero-filled
+  SUCCESS: Pages are writable
+  SUCCESS: Pages freed successfully
+
+Test 4: Allocating 4 pages (262144 bytes)
+  SUCCESS: Allocated 262144 bytes
+  SUCCESS: Pages are zero-filled
+  SUCCESS: Pages are writable
+  SUCCESS: Pages freed successfully
+
+Test 5: Allocating 8 pages (524288 bytes)
+  SUCCESS: Allocated 524288 bytes
+  SUCCESS: Pages are zero-filled
+  SUCCESS: Pages are writable
+  SUCCESS: Pages freed successfully
+
+Test 6: Allocating 16 pages (1048576 bytes)
+  SUCCESS: Allocated 1048576 bytes
+  SUCCESS: Pages are zero-filled
+  SUCCESS: Pages are writable
+  SUCCESS: Pages freed successfully
+
+Test 7: Allocating 32 pages (2097152 bytes)
+  SUCCESS: Allocated 2097152 bytes
+  SUCCESS: Pages are zero-filled
+  SUCCESS: Pages are writable
+  SUCCESS: Pages freed successfully
+
+Various page size tests completed
+
+=== Test: Non-Page-Aligned Allocation Sizes ===
+
+System page size: 65536 bytes
+Testing allocation of non-page-aligned sizes
+
+Test 1: Requesting 100 bytes (non-page-aligned)
+  SUCCESS: Allocated 100 bytes
+  SUCCESS: Requested area is zero-filled
+  SUCCESS: Requested area is writable
+  SUCCESS: Pages freed successfully
+
+Test 2: Requesting 1000 bytes (non-page-aligned)
+  SUCCESS: Allocated 1000 bytes
+  SUCCESS: Requested area is zero-filled
+  SUCCESS: Requested area is writable
+  SUCCESS: Pages freed successfully
+
+Test 3: Requesting 5000 bytes (non-page-aligned)
+  SUCCESS: Allocated 5000 bytes
+  SUCCESS: Requested area is zero-filled
+  SUCCESS: Requested area is writable
+  SUCCESS: Pages freed successfully
+
+Test 4: Requesting 10000 bytes (non-page-aligned)
+  SUCCESS: Allocated 10000 bytes
+  SUCCESS: Requested area is zero-filled
+  SUCCESS: Requested area is writable
+  SUCCESS: Pages freed successfully
+
+Non-page-aligned size tests completed
+
+=== All Page Allocation Tests Completed ===

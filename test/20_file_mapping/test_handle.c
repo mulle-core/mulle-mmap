@@ -4,8 +4,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <fcntl.h>
-#include <unistd.h>
+
+#ifdef _WIN32
+# include <windows.h>
+#else
+# include <fcntl.h>
+# include <unistd.h>
+#endif
 
 
 static void test_map_with_handle( char *filename, char *description)
@@ -13,15 +18,19 @@ static void test_map_with_handle( char *filename, char *description)
    struct mulle_mmap   info;
    char                *data;
    size_t              length;
-   int                 fd;
+   mulle_mmap_file_t   fd;
    int                 rval;
-   int                 mmap_handle;
 
    printf( "Testing %s (%s):\n", description, filename);
 
    // Open file manually
+#ifdef _WIN32
+   fd = CreateFileA( filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+   if( fd == INVALID_HANDLE_VALUE)
+#else
    fd = open( filename, O_RDONLY);
    if( fd == -1)
+#endif
    {
       printf( "  Failed to open file: %s\n", strerror( errno));
       return;
@@ -36,7 +45,11 @@ static void test_map_with_handle( char *filename, char *description)
    if( rval)
    {
       printf( "  Failed to mmap with handle: %s\n", strerror( errno));
+#ifdef _WIN32
+      CloseHandle( fd);
+#else
       close( fd);
+#endif
       _mulle_mmap_done( &info);
       return;
    }
@@ -45,7 +58,11 @@ static void test_map_with_handle( char *filename, char *description)
    if( ! _mulle_mmap_is_open( &info))
    {
       printf( "  ERROR: mmap is not open after successful mapping\n");
+#ifdef _WIN32
+      CloseHandle( fd);
+#else
       close( fd);
+#endif
       _mulle_mmap_done( &info);
       return;
    }
@@ -53,7 +70,11 @@ static void test_map_with_handle( char *filename, char *description)
    if( ! _mulle_mmap_is_mapped( &info))
    {
       printf( "  ERROR: mmap is not mapped after successful mapping\n");
+#ifdef _WIN32
+      CloseHandle( fd);
+#else
       close( fd);
+#endif
       _mulle_mmap_done( &info);
       return;
    }
@@ -67,10 +88,6 @@ static void test_map_with_handle( char *filename, char *description)
    printf( "  Mapping offset : %zu\n", _mulle_mmap_get_mapping_offset( &info));
    
    printf( "  Handle stored correctly\n");
-   if( mmap_handle != fd)
-   {
-      printf( "  WARNING: Stored handle differs from original handle\n");
-   }
 
    // Verify data pointer is not NULL for non-empty files
    if( length > 0 && data == NULL)
@@ -98,7 +115,11 @@ static void test_map_with_handle( char *filename, char *description)
    _mulle_mmap_done( &info);
    
    // Close the original file descriptor we opened
+#ifdef _WIN32
+   CloseHandle( fd);
+#else
    close( fd);
+#endif
    
    printf( "  Test completed successfully\n\n");
 }
@@ -111,15 +132,20 @@ static void test_map_range_with_handle( char *filename, size_t offset, size_t le
    size_t              actual_length;
    size_t              mapped_length;
    size_t              mapping_offset;
-   int                 fd;
+   mulle_mmap_file_t   fd;
    int                 rval;
 
    printf( "Testing %s:\n", description);
    printf( "  File: %s, Handle mapping, Offset: %zu, Length: %zu\n", filename, offset, length);
 
    // Open file manually
+#ifdef _WIN32
+   fd = CreateFileA( filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+   if( fd == INVALID_HANDLE_VALUE)
+#else
    fd = open( filename, O_RDONLY);
    if( fd == -1)
+#endif
    {
       printf( "  Failed to open file: %s\n", strerror( errno));
       return;
@@ -133,7 +159,11 @@ static void test_map_range_with_handle( char *filename, size_t offset, size_t le
    if( rval)
    {
       printf( "  Failed to mmap range with handle: %s\n", strerror( errno));
+#ifdef _WIN32
+      CloseHandle( fd);
+#else
       close( fd);
+#endif
       _mulle_mmap_done( &info);
       return;
    }
@@ -172,7 +202,11 @@ static void test_map_range_with_handle( char *filename, size_t offset, size_t le
 
    // Clean up
    _mulle_mmap_done( &info);
+#ifdef _WIN32
+   CloseHandle( fd);
+#else
    close( fd);
+#endif
    printf( "  Test completed successfully\n\n");
 }
 
@@ -188,7 +222,7 @@ static void test_invalid_handle( void)
    _mulle_mmap_init( &info, mulle_mmap_read);
 
    // Try to map with invalid handle
-   rval = _mulle_mmap_map( &info, -1);
+   rval = _mulle_mmap_map( &info, MULLE_MMAP_INVALID_HANDLE);
    if( rval == 0)
    {
       printf( "  ERROR: Mapping with invalid handle should have failed\n");

@@ -35,14 +35,16 @@
 
 #include <unistd.h>
 #include <fcntl.h>
-#if defined( __COSMOPOLITAN__) || defined( __MULLE_COSMOPOLITAN__)
-#include <cosmopolitan/cosmopolitan.h>
-#else
 #include <sys/mman.h>
-#endif
 #include <sys/stat.h>
 #include <errno.h>
 #include <stdint.h>
+#include <time.h>
+#include <stdio.h>
+
+#if defined( __COSMOPOLITAN__) || defined( __MULLE_COSMOPOLITAN__)
+#include <cosmopolitan/cosmopolitan.h>
+#endif
 
 static inline size_t   mulle_mmap_pagealign_offset( size_t offset)
 {
@@ -110,15 +112,90 @@ void   *mulle_mmap_alloc_pages( size_t size)
    return( p);
 }
 
-void   *mulle_mmap_alloc_shared_pages( size_t size)
+struct mulle_mmap_shared_memory   mulle_mmap_alloc_shared_memory( size_t size)
 {
-   void  *p;
+   struct mulle_mmap_shared_memory result = { NULL, 0, -1 };
+   char                            name[64];
+   int                             fd;
+   void                            *p;
    
-   p = mmap( 0, size, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1, 0);
+   if( size == 0)
+      return( result);
+   
+   // Create unique name using PID and timestamp
+   snprintf( name, sizeof(name), "/mulle-mmap-%d-%ld", getpid(), (long)time(NULL));
+   
+   // Create POSIX shared memory object
+   fd = shm_open( name, O_RDWR | O_CREAT | O_EXCL, 0600);
+   if( fd == -1)
+      return( result);
+   
+   // Unlink immediately - object persists while fd is open
+   shm_unlink( name);
+   
+   // Set size
+   if( ftruncate( fd, size) == -1)
+   {
+      close( fd);
+      return( result);
+   }
+   
+   // Map it
+   p = mmap( NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+   if( p == MAP_FAILED)
+   {
+      close( fd);
+      return( result);
+   }
+   
+   result.address = p;
+   result.size    = size;
+   result.handle  = (mulle_mmap_file_t)(intptr_t)fd;  // Store fd as handle
+   
+   return( result);
+}
+
+int   mulle_mmap_free_shared_memory( struct mulle_mmap_shared_memory *mem)
+{
+   int rval;
+   int fd;
+   
+   if( ! mem || ! mem->address)
+      return( 0);
+   
+   rval = munmap( mem->address, mem->size);
+   
+   // Close the fd
+   if( mem->handle != MULLE_MMAP_INVALID_HANDLE)
+   {
+      fd = (int)(intptr_t)mem->handle;
+      close( fd);
+   }
+   
+   return( rval);
+}
+
+
+void   *mulle_mmap_alloc_shared_pages_nowindows( size_t size)
+{
+   void *p;
+   
+   if( size == 0)
+      return( NULL);
+   
+   p = mmap( NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
    if( p == MAP_FAILED)
       return( NULL);
+   
    return( p);
 }
+
+void   mulle_mmap_free_shared_pages_nowindows( void *address, size_t size)
+{
+   if( address)
+      munmap( address, size);
+}
+
 
 int   _mulle_mmap_free_pages( void *p, size_t size)
 {

@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 3.13...99.99)
 
-project( mulle-mmap VERSION 0.2.6 LANGUAGES C)
+project( mulle-mmap VERSION 1.0.0 LANGUAGES C)
 
 
 

@@ -59,7 +59,7 @@ static void test_system_pagesize( void)
 static void test_basic_page_operations( void)
 {
    void   *regular_pages;
-   void   *shared_pages;
+   struct mulle_mmap_shared_memory shared_pages;
    size_t page_size;
    size_t alloc_size;
    int    rval;
@@ -86,8 +86,8 @@ static void test_basic_page_operations( void)
    printf( "Phase 2: Shared page allocation\n");
    
    // Allocate shared pages
-   shared_pages = mulle_mmap_alloc_shared_pages( alloc_size);
-   if( ! shared_pages)
+   shared_pages = mulle_mmap_alloc_shared_memory( alloc_size);
+   if( ! shared_pages.address)
    {
       printf( "ERROR: Failed to allocate shared pages: %s\n", strerror( errno));
       mulle_mmap_free_pages( regular_pages, alloc_size);
@@ -100,7 +100,7 @@ static void test_basic_page_operations( void)
    
    // Check zero-fill for both types
    unsigned char *reg_ptr = (unsigned char *) regular_pages;
-   unsigned char *shr_ptr = (unsigned char *) shared_pages;
+   unsigned char *shr_ptr = (unsigned char *) shared_pages.address;
    
    int reg_zero_filled = 1;
    int shr_zero_filled = 1;
@@ -173,7 +173,7 @@ static void test_basic_page_operations( void)
    }
    
    // Free shared pages
-   rval = mulle_mmap_free_pages( shared_pages, alloc_size);
+   rval = mulle_mmap_free_shared_memory( &shared_pages);
    if( rval == 0)
    {
       printf( "  SUCCESS: Shared pages freed\n");
@@ -201,8 +201,9 @@ static void test_page_size_variations( void)
    
    for( i = 0; i < num_tests; i++)
    {
-      void   *reg_pages, *shr_pages;
-      size_t alloc_size = page_size * test_multipliers[i];
+      void                           *reg_pages;
+      struct mulle_mmap_shared_memory shr_pages;
+      size_t                         alloc_size = page_size * test_multipliers[i];
       
       printf( "Test %zu: %zu pages (%zu bytes)\n", i + 1, test_multipliers[i], alloc_size);
       
@@ -219,11 +220,11 @@ static void test_page_size_variations( void)
       }
       
       // Test shared pages
-      shr_pages = mulle_mmap_alloc_shared_pages( alloc_size);
-      if( shr_pages)
+      shr_pages = mulle_mmap_alloc_shared_memory( alloc_size);
+      if( shr_pages.address)
       {
          printf( "  Shared pages: SUCCESS\n");
-         mulle_mmap_free_pages( shr_pages, alloc_size);
+         mulle_mmap_free_shared_memory( &shr_pages);
       }
       else
       {

@@ -4,21 +4,45 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/stat.h>
+
+#ifdef _WIN32
+# include <windows.h>
+# include <sys/stat.h>
+#else
+# include <fcntl.h>
+# include <unistd.h>
+# include <sys/stat.h>
+#endif
 
 
 static void create_test_file_with_mmap( char *filename, size_t size)
 {
    struct mulle_mmap   info;
-   int                 fd;
+   mulle_mmap_file_t   fd;
    char                *mapped_data;
    int                 rval;
    
    printf( "Creating test file with mmap: %s (%zu bytes)\n", filename, size);
    
    // Create and open file for writing
+#ifdef _WIN32
+   fd = CreateFileA( filename, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+   if( fd == INVALID_HANDLE_VALUE)
+   {
+      printf( "ERROR: Failed to create test file: %s\n", strerror( errno));
+      exit( 1);
+   }
+   
+   // Extend file to desired size
+   LARGE_INTEGER li;
+   li.QuadPart = size;
+   if( ! SetFilePointerEx( fd, li, NULL, FILE_BEGIN) || ! SetEndOfFile( fd))
+   {
+      printf( "ERROR: Failed to set file size: %s\n", strerror( errno));
+      CloseHandle( fd);
+      exit( 1);
+   }
+#else
    fd = open( filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
    if( fd == -1)
    {
@@ -30,16 +54,25 @@ static void create_test_file_with_mmap( char *filename, size_t size)
    if( lseek( fd, size - 1, SEEK_SET) == -1)
    {
       printf( "ERROR: Failed to seek in file: %s\n", strerror( errno));
-      close( fd);
+      #ifdef _WIN32
+         CloseHandle( fd);
+      #else
+         close( fd);
+      #endif
       exit( 1);
    }
    
    if( write( fd, "", 1) != 1)
    {
       printf( "ERROR: Failed to write to file: %s\n", strerror( errno));
-      close( fd);
+      #ifdef _WIN32
+         CloseHandle( fd);
+      #else
+         close( fd);
+      #endif
       exit( 1);
    }
+#endif
    
    // Initialize mmap structure for read-write
    _mulle_mmap_init( &info, mulle_mmap_write);
@@ -49,7 +82,15 @@ static void create_test_file_with_mmap( char *filename, size_t size)
    if( rval)
    {
       printf( "ERROR: Failed to map file for creation: %s\n", strerror( errno));
-      close( fd);
+#ifdef _WIN32
+      CloseHandle( fd);
+#else
+      #ifdef _WIN32
+         CloseHandle( fd);
+      #else
+         close( fd);
+      #endif
+#endif
       _mulle_mmap_done( &info);
       exit( 1);
    }
@@ -66,7 +107,11 @@ static void create_test_file_with_mmap( char *filename, size_t size)
    
    // Clean up
    _mulle_mmap_done( &info);
-   close( fd);
+   #ifdef _WIN32
+      CloseHandle( fd);
+   #else
+      close( fd);
+   #endif
    
    printf( "  Test file created successfully using mmap\n\n");
 }
@@ -115,7 +160,7 @@ static void test_write_persistence_after_close( void)
    char                *test_filename;
    char                *mapped_data;
    size_t              file_size;
-   int                 fd;
+   mulle_mmap_file_t   fd;
    int                 rval;
    
    printf( "=== Test: Write Memory Mapping Persistence After File Descriptor Close ===\n\n");
@@ -132,8 +177,13 @@ static void test_write_persistence_after_close( void)
    printf( "Phase 2: Opening file for read/write mapping\n");
    
    // Open file for read/write
+#ifdef _WIN32
+   fd = CreateFileA( test_filename, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+   if( fd == INVALID_HANDLE_VALUE)
+#else
    fd = open( test_filename, O_RDWR);
    if( fd == -1)
+#endif
    {
       printf( "ERROR: Failed to open test file: %s\n", strerror( errno));
       return;
@@ -148,7 +198,11 @@ static void test_write_persistence_after_close( void)
    if( rval)
    {
       printf( "ERROR: Failed to map file for writing: %s\n", strerror( errno));
-      close( fd);
+      #ifdef _WIN32
+         CloseHandle( fd);
+      #else
+         close( fd);
+      #endif
       _mulle_mmap_done( &info);
       return;
    }
@@ -163,7 +217,11 @@ static void test_write_persistence_after_close( void)
    printf( "\nPhase 3: Closing file descriptor while keeping mapping\n");
    
    // Close the file descriptor
-   close( fd);
+   #ifdef _WIN32
+      CloseHandle( fd);
+   #else
+      close( fd);
+   #endif
    printf( "  File descriptor closed\n");
    
    // Verify the mapping is still valid for writing

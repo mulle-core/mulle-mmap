@@ -1,4 +1,5 @@
 # mulle-mmap Library Documentation for AI
+<!-- Keywords: mmap, file-mapping -->
 
 ## 1. Introduction & Purpose
 

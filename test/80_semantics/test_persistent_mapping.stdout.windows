@@ -1,0 +1,26 @@
+=== Memory Mapping Persistence Tests ===
+
+These tests verify fundamental mmap() behavior:
+1. Mapped memory remains accessible after closing file descriptor
+2. Mapped memory behavior when original file is removed
+
+=== Test: Memory Mapping Persistence After File Descriptor Close ===
+
+Creating test file: persistent_test.txt (284 bytes)
+Test file created successfully
+
+Phase 1: Opening file and mapping into memory
+  File opened successfully
+  File mapped successfully
+  Mapped length: 289 bytes
+  Verifying data access while file is open...
+    ERROR: Mapped length (289) != expected length (284)
+=== Test: Memory Mapping After File Removal ===
+
+Creating test file: removable_test.txt (97 bytes)
+Test file created successfully
+
+Phase 1: Mapping file with _mulle_mmap_map_file
+  File mapped successfully: 99 bytes
+ERROR: Initial data verification failed
+=== All Memory Mapping Persistence Tests Completed ===

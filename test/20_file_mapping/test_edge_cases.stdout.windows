@@ -1,0 +1,90 @@
+=== Edge Cases and Alignment Tests ===
+
+Testing unaligned offset mappings:
+  System page size: 65536 bytes
+  Testing offset 1:
+    SUCCESS - Length: 1024, Mapped: 1025, MapOffset: 1
+    First byte at offset 1: 0x59
+  Testing offset 3:
+    SUCCESS - Length: 1024, Mapped: 1027, MapOffset: 3
+    First byte at offset 3: 0xe6
+  Testing offset 17:
+    SUCCESS - Length: 1024, Mapped: 1041, MapOffset: 17
+    First byte at offset 17: 0x91
+  Testing offset 63:
+    SUCCESS - Length: 1024, Mapped: 1087, MapOffset: 63
+    First byte at offset 63: 0x32
+  Testing offset 127:
+    SUCCESS - Length: 1024, Mapped: 1151, MapOffset: 127
+    First byte at offset 127: 0x87
+  Testing offset 255:
+    SUCCESS - Length: 1024, Mapped: 1279, MapOffset: 255
+    First byte at offset 255: 0x6d
+  Testing offset 511:
+    SUCCESS - Length: 1024, Mapped: 1535, MapOffset: 511
+    First byte at offset 511: 0x25
+  Testing offset 1023:
+    SUCCESS - Length: 1024, Mapped: 2047, MapOffset: 1023
+    First byte at offset 1023: 0x91
+  Testing offset 2047:
+    SUCCESS - Length: 1024, Mapped: 3071, MapOffset: 2047
+    First byte at offset 2047: 0x79
+  Testing offset 4095:
+    SUCCESS - Length: 1024, Mapped: 5119, MapOffset: 4095
+    First byte at offset 4095: 0x27
+  Unaligned offset tests completed
+
+Testing various length parameters:
+  Testing length 1:
+    SUCCESS - Requested: 1, Actual: 1, Mapped: 1
+  Testing length 2:
+    SUCCESS - Requested: 2, Actual: 2, Mapped: 2
+  Testing length 3:
+    SUCCESS - Requested: 3, Actual: 3, Mapped: 3
+  Testing length 4:
+    SUCCESS - Requested: 4, Actual: 4, Mapped: 4
+  Testing length 5:
+    SUCCESS - Requested: 5, Actual: 5, Mapped: 5
+  Testing length 7:
+    SUCCESS - Requested: 7, Actual: 7, Mapped: 7
+  Testing length 15:
+    SUCCESS - Requested: 15, Actual: 15, Mapped: 15
+  Testing length 31:
+    SUCCESS - Requested: 31, Actual: 31, Mapped: 31
+  Testing length 63:
+    SUCCESS - Requested: 63, Actual: 63, Mapped: 63
+  Testing length 127:
+    SUCCESS - Requested: 127, Actual: 127, Mapped: 127
+  Testing length 255:
+    SUCCESS - Requested: 255, Actual: 255, Mapped: 255
+  Testing length 511:
+    SUCCESS - Requested: 511, Actual: 511, Mapped: 511
+  Testing length 1023:
+    SUCCESS - Requested: 1023, Actual: 1023, Mapped: 1023
+  Testing length 2047:
+    SUCCESS - Requested: 2047, Actual: 2047, Mapped: 2047
+  Testing length 4095:
+    SUCCESS - Requested: 4095, Actual: 4095, Mapped: 4095
+  Testing length 8191:
+    SUCCESS - Requested: 8191, Actual: 8191, Mapped: 8191
+  Testing SIZE_MAX length:
+    SUCCESS - SIZE_MAX mapped to actual file size: 16384
+  Length variation tests completed
+
+Testing boundary conditions:
+  Test 1: Mapping at end of file (offset = file size)
+    SUCCESS: Failed as expected for offset at end of file (error code: -1)
+  Test 2: Mapping beyond end of file (offset > file size)
+    SUCCESS: Failed as expected for offset beyond file (error code: -1)
+  Test 3: Length extending beyond file end
+    Failed with error code: -1
+  Test 4: Single byte at end of file
+    SUCCESS: Mapped last byte, length: 1
+    Last byte value: 0xe2
+  Boundary condition tests completed
+
+Testing page boundary alignments:
+  System page size: 65536 bytes
+  Page boundary alignment tests completed
+
+=== All Edge Case and Alignment Tests Completed ===

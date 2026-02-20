@@ -1,0 +1,13 @@
+=== Test: Free Before Spawning Child ===
+
+Step 1: Allocate shared pages
+  Wrote: 42
+
+Step 2: Fork child FIRST
+
+Step 3: Parent frees AFTER fork
+  Parent freed!
+
+✓ UNIX WORKS: Child could still access - fork() duplicated mapping before parent freed!
+
+=== Test Complete ===

@@ -1,0 +1,14 @@
+Child: This will never print because handle was closed!
+=== Test: Free Before Spawning Child ===
+
+Step 1: Allocate shared pages
+  Wrote: 42
+
+Step 2: FREE the shared pages
+  Freed!
+
+Step 3: NOW spawn child to try reading
+
+✗ WINDOWS FAILS: Child couldn't access - handle was closed before CreateProcess!
+
+=== Test Complete ===

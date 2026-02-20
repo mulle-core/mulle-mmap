@@ -6,7 +6,6 @@ Testing empty file via handle (empty.txt):
   Mapped length  : 0 bytes
   Mapping offset : 0
   Handle stored correctly
-  WARNING: Stored handle differs from original handle
   Empty file - data pointer may be NULL
   Test completed successfully
 
@@ -16,7 +15,6 @@ Testing small file via handle (small.txt):
   Mapped length  : 84 bytes
   Mapping offset : 0
   Handle stored correctly
-  WARNING: Stored handle differs from original handle
   SUCCESS: Data pointer is valid
   First byte: 0x54
   Last byte : 0x0a
@@ -28,7 +26,6 @@ Testing medium file via handle (medium.txt):
   Mapped length  : 4096 bytes
   Mapping offset : 0
   Handle stored correctly
-  WARNING: Stored handle differs from original handle
   SUCCESS: Data pointer is valid
   Test completed successfully
 
@@ -38,7 +35,6 @@ Testing large file via handle (large.txt):
   Mapped length  : 16384 bytes
   Mapping offset : 0
   Handle stored correctly
-  WARNING: Stored handle differs from original handle
   SUCCESS: Data pointer is valid
   Test completed successfully
 
@@ -48,7 +44,6 @@ Testing binary file via handle (binary.dat):
   Mapped length  : 512 bytes
   Mapping offset : 0
   Handle stored correctly
-  WARNING: Stored handle differs from original handle
   SUCCESS: Data pointer is valid
   Test completed successfully
 

@@ -37,5 +37,3 @@ valgrind.bin
 mulle-match-to-cmake
 mulle-match-to-c
 cmake;script
-subl
-subl.exe

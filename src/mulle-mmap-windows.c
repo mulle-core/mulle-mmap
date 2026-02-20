@@ -104,16 +104,99 @@ void   *mulle_mmap_alloc_pages( size_t size)
    return( VirtualAlloc( NULL, size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
 }
 
-void   *mulle_mmap_alloc_shared_pages( size_t size)
+struct mulle_mmap_shared_memory   mulle_mmap_alloc_shared_memory( size_t size)
 {
-   abort();
-   MULLE_C_UNUSED( size);
+   struct mulle_mmap_shared_memory result = { NULL, 0, INVALID_HANDLE_VALUE };
+   SECURITY_ATTRIBUTES             sa;
+   HANDLE                          hMap;
+   void                            *p;
+   
+   if( size == 0)
+      return( result);
+   
+   // Make the handle inheritable so child processes can access it
+   sa.nLength              = sizeof(SECURITY_ATTRIBUTES);
+   sa.lpSecurityDescriptor = NULL;
+   sa.bInheritHandle       = TRUE;
+   
+   // Create anonymous shared memory mapping (backed by page file)
+   hMap = CreateFileMappingA(
+      INVALID_HANDLE_VALUE,  // Use paging file
+      &sa,                   // Inheritable handle
+      PAGE_READWRITE,        // Read/write access
+      0,                     // High-order DWORD of size
+      (DWORD) size,          // Low-order DWORD of size
+      NULL                   // Anonymous (no name)
+   );
+   
+   if( hMap == NULL)
+      return( result);
+   
+   // Map the entire file mapping into address space
+   p = MapViewOfFile(
+      hMap,
+      FILE_MAP_ALL_ACCESS,
+      0,                     // High-order offset
+      0,                     // Low-order offset
+      size                   // Number of bytes to map
+   );
+   
+   if( p == NULL)
+   {
+      CloseHandle( hMap);
+      return( result);
+   }
+   
+   // Keep the handle open - it's needed for child processes to access the mapping
+   result.address = p;
+   result.size    = size;
+   result.handle  = hMap;
+   
+   return( result);
+}
+
+int   mulle_mmap_free_shared_memory( struct mulle_mmap_shared_memory *mem)
+{
+   int rval = 0;
+   
+   if( ! mem || ! mem->address)
+      return( 0);
+   
+   if( ! UnmapViewOfFile( mem->address))
+      rval = -1;
+   
+   if( mem->handle != INVALID_HANDLE_VALUE)
+      CloseHandle( mem->handle);
+   
+   mem->address = NULL;
+   mem->size    = 0;
+   mem->handle  = INVALID_HANDLE_VALUE;
+   
+   return( rval);
+}
+
+
+// Unix-only functions - not available on Windows
+void   *mulle_mmap_alloc_shared_pages_nowindows( size_t size)
+{
+   errno = ENOSYS;  // Function not implemented
    return( NULL);
 }
 
+void   mulle_mmap_free_shared_pages_nowindows( void *address, size_t size)
+{
+   // No-op on Windows
+}
+
+
 int   _mulle_mmap_free_pages( void *p, size_t size)
 {
-   return( ! VirtualFree( p, size, MEM_RELEASE));
+   // Try UnmapViewOfFile first (for shared pages from MapViewOfFile)
+   if( UnmapViewOfFile( p))
+      return( 0);
+   
+   // Fall back to VirtualFree (for regular pages from VirtualAlloc)
+   return( ! VirtualFree( p, 0, MEM_RELEASE));
 }
 
 // Windows-specific helper functions

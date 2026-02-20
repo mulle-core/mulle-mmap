@@ -14,6 +14,7 @@
       "src/mulle-mmap.h",
       "src/reflect/_mulle-mmap-include-private.h",
       "src/reflect/_mulle-mmap-include.h",
+      "src/reflect/_mulle-mmap-provide.h",
       "src/reflect/_mulle-mmap-versioncheck.h"
    ],
    "dependencies" : {

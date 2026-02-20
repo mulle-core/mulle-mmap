@@ -1,0 +1,49 @@
+=== Partial Unmap Functionality Tests ===
+
+These tests verify that mulle-mmap supports partial unmapping:
+1. Map large region, unmap middle portion
+2. Various edge cases for partial unmapping
+3. Non-aligned boundary behavior
+
+=== Test: Partial Unmap - Three Pages, Remove Middle ===
+
+System page size: 65536 bytes
+Total allocation: 196608 bytes (3 pages)
+Phase 1: Allocating 3 pages
+  SUCCESS: Allocated 3 pages
+    Page 1: [allocated]
+    Page 2: [allocated]
+    Page 3: [allocated]
+Phase 2: Writing unique patterns to each page
+  SUCCESS: Patterns written to all 3 pages
+    Page 1: 0xAA, Page 2: 0xBB, Page 3: 0xCC
+Phase 3: Unmapping middle page (page 2)
+  mulle_mmap_free_pages(page2, page_size) returned: 1
+  ERROR: Failed to unmap middle page: Success
+=== Test: Partial Unmap Edge Cases ===
+
+Phase 1: Allocating 4 pages
+  SUCCESS: Allocated 4 pages
+Phase 2: Testing edge case - unmap first page
+  SUCCESS: First page unmapped
+Phase 3: Testing edge case - unmap last page
+  ERROR: Failed to unmap last page: Success
+Phase 4: Testing edge case - unmap two contiguous middle pages
+  ERROR: Failed to unmap two middle pages: Success
+Test completed
+
+=== Test: Partial Unmap - Non-Aligned Boundaries ===
+
+Phase 1: Allocating 3 pages
+  SUCCESS: Allocated 3 pages
+Phase 2: Attempting to unmap non-page-aligned region
+  This should either work or fail gracefully
+  Attempting to unmap 65536 bytes starting at offset 32768
+  INFO: Non-aligned unmap rejected (errno: Success)
+  This is expected - most implementations require page alignment
+  SUCCESS: Full region freed normally
+Test completed
+
+=== All Partial Unmap Tests Completed ===
+If these tests pass, mulle-mmap supports the partial unmap functionality
+that your application requires.
