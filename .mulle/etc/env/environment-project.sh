@@ -55,7 +55,7 @@ export PROJECT_EXTENSIONS="c"
 #
 #
 #
-export PROJECT_ASSET_DIR="DEFAULT"
+export PROJECT_ASSET_DIR="asset"
 
 
 #

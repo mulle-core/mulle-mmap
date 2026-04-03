@@ -1,5 +1,5 @@
 # mulle-sde Dependency and File inclusion guidelines
-<!-- Keywords: craft, build, run -->
+<!-- Keywords: mulle-sde, sourcetree, dependency, craft, build, run -->
 
 You should add third party dependencies and your own projects that are missing
 from project with `mulle-sde dependency add`.
@@ -45,11 +45,11 @@ Some important marks:
 | Mark               | Meaning
 |--------------------|----------------------------
 |no-bequeath         | is not inheritable
-|no-platform-windows | not available on window
+|no-platform-windows | not available on windows
 
 ## Dependency Order
 
-If dependecy `a` depends on dependency `b` it must be ordered after `b`.
+If dependency `a` depends on dependency `b` it must be ordered after `b`.
 This rule is relaxed if both dependencies are `no-singlephase` and aren't
 gapped by a dependency that is `singlephase` (as no `no-singlephase`).
 
@@ -76,63 +76,8 @@ default SDK `Default` are folded in.
 /home/nat/.mulle/var/cache/sde/mulle-time-9ffd13004743/dependency
 ├── bin
 ├── Debug
-│   ├── bin
-│   ├── include
-│   │   ├── include.h
-│   │   ├── mulle-c11
-│   │   │   ├── mulle-c11-align.h
-│   │   │   └── mulle-c11-integer.h
-│   │   └── mulle-time
-│   │       ├── cmake
-│   │       │   ├── DependenciesAndLibraries.cmake
-│   │       │   ├── _Dependencies.cmake
-│   │       │   └── _Libraries.cmake
-│   │       ├── include.h
-│   │       ├── mulle-timetype.h
-│   │       └── mulle-timeval.h
-│   ├── lib
-│   │   ├── cmake
-│   │   │   └── mulle-c11
-│   │   │       └── mulle-c11-config.cmake
-│   │   └── libmulle-time.so
-│   └── share
-│       └── mulle-time
-│           └── dox
-│               └── TOC.md
 ├── etc
-│   ├── craftorder
-│   ├── done--Default-linux-Debug
-│   ├── done--Default-windows-Debug
-│   ├── link--Default-linux-Debug
-│   ├── link--Default-linux-Debug--startup
-│   ├── link--Default-windows-Debug
-│   └── link--Default-windows-Debug--startup
 └── windows
-    └── Debug
-        ├── bin
-        ├── include
-        │   ├── include.h
-        │   ├── mulle-c11
-        │   │   ├── mulle-c11-align.h
-        │   │   └── mulle-c11-integer.h
-        │   └── mulle-time
-        │       ├── cmake
-        │       │   ├── DependenciesAndLibraries.cmake
-        │       │   ├── _Dependencies.cmake
-        │       │   └── _Libraries.cmake
-        │       ├── include.h
-        │       ├── mulle-absolutetime.h
-        │       └── mulle-timeval.h
-        ├── lib
-        │   ├── cmake
-        │   │   └── mulle-c11
-        │   │       └── mulle-c11-config.cmake
-        │   ├── libmulle-time.dll
-        │   └── libmulle-time.dll.a
-        └── share
-            └── mulle-time
-                └── dox
-                    └── TOC.md
 ```
 
 ### /etc
@@ -140,11 +85,9 @@ default SDK `Default` are folded in.
 ```
 ├── etc
 │   ├── craftorder
-│   ├── done--Default-linux-Debug
+|   |..
 │   ├── done--Default-windows-Debug
-│   ├── link--Default-linux-Debug
-│   ├── link--Default-linux-Debug--startup
-│   ├── link--Default-windows-Debug
+|   |..
 │   └── link--Default-windows-Debug--startup
 ```
 
@@ -165,24 +108,26 @@ line arguments to use to link the dependencies.
 ```
 └── windows
     └── Debug
-        ├── bin
+        |.. |..
         ├── include
         │   ├── include.h
         │   ├── mulle-c11
         │   │   ├── mulle-c11-align.h
+        |   |..
 ```
 
 ### Cmake inheritance
 
 ```
 ├── Debug
-│   ├── bin
+|.. |..
 │   ├── include
 │   │   └── mulle-time
 │   │       ├── cmake
 │   │       │   ├── DependenciesAndLibraries.cmake
 │   │       │   ├── _Dependencies.cmake
 │   │       │   └── _Libraries.cmake
+|   |       |..
 ```
 
 `DependenciesAndLibraries.cmake` is read by the custom mulle-sde cmake file
@@ -192,6 +137,8 @@ to inherit dependencies recursively from other dependencies.
 
 
 ```
+├── Debug
+|.. |..
 │   └── share
 │       └── mulle-time
 │           └── dox
@@ -199,3 +146,39 @@ to inherit dependencies recursively from other dependencies.
 ```
 
 These are the API files you can read with `mulle-sde api cat`.
+
+
+## Howto manage cross-platform library or dependency
+
+A typical problem you need zlib on Linux as a system library but on Windows
+you need to build from source.
+
+### 1. Add system library
+
+``` bash
+mulle-sde library add --marks no-platform-windows z
+```
+### 2. Add dependency (source fallback)
+
+``` bash
+mulle-sde dependency add --marks only-platform-windows --github madler/zlib
+mulle-sde dependency move zlib to top  # Must build before your project
+```
+
+### 3. Set library search aliases if needed
+
+``` bash
+# Check what the built library is actually called:
+find $(mulle-sde dependency-dir)/windows/Debug/lib -name "*z*"
+# Found: libzd.dll.a (debug), libzsd.a (static debug)
+
+mulle-sde dependency set zlib aliases z,zs
+```
+
+### 4. Don't generate includes if code already has `#include <zlib.h>`
+
+``` bash
+mulle-sde library mark z no-header
+mulle-sde dependency mark zlib no-header
+```
+

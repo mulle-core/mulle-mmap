@@ -177,6 +177,31 @@ int   mulle_mmap_free_shared_memory( struct mulle_mmap_shared_memory *mem)
 
 
 // Unix-only functions - not available on Windows
+void   *mulle_mmap_map_shared_memory( mulle_mmap_file_t handle,
+                                      size_t size,
+                                      void *preferred_addr)
+{
+   void   *p;
+
+   if( handle == MULLE_MMAP_INVALID_HANDLE || size == 0)
+      return( NULL);
+
+   // Try at preferred address first; fall back to OS-chosen address
+   if( preferred_addr)
+   {
+      p = MapViewOfFileEx( handle, FILE_MAP_ALL_ACCESS, 0, 0, size, preferred_addr);
+      if( p)
+      {
+         return( p);
+      }
+      /* MapViewOfFileEx at preferred address failed, fall back */
+   }
+
+   return( MapViewOfFile( handle, FILE_MAP_ALL_ACCESS, 0, 0, size));
+}
+
+
+// Unix-only functions - not available on Windows
 void   *mulle_mmap_alloc_shared_pages_nowindows( size_t size)
 {
    errno = ENOSYS;  // Function not implemented

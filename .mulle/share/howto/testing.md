@@ -2,7 +2,6 @@
 <!-- Keywords: test, run, testing, workflow, valgrind, coverage -->
 
 
-
 ## 🚨 CRITICAL RULE - READ THIS FIRST 🚨
 
 **`test` is an ISOLATED mulle-sde project**
@@ -57,36 +56,6 @@ with the suffix `.exe` will not be removed.
 - `.test.ccerr` (or `.test.ccdiag`) - compiler warnings/errors
 - `.exe` - compiled executable (don't run directly)
 
-## Creating a Test
-
-Create a theme directory below test like `20-leak`
-
-Create `20-leak/mytest.c` in your project. Write your test code (just a normal
-C program with main()). You can write result values to stdout.
-
-### Test Structure Example
-
-```c
-#include "include.h"  // use provided header for all dependency includes
-
-int   main( void)
-{
-   // 1. Setup objects and environment
-   // 2. Print descriptive output of the test steps and results
-   mulle_printf("Test description: ...\n");
-   // 3. Clean up and deallocate all objects
-   return 0;  // 0 = success, non-zero = failure
-}
-```
-
-- Tests are compiled with `-DMULLE_TEST=1`
-- Return 0 for success, anything else for failure
-- Prefer mulle_printf over printf, if available
-- **NEVER print**: times, dates, pointer addresses, error codes, anything that will vary between two test runs
-
-In well behaved mulle project you can just "include.h" or "import.h" in your
-test and you will get all dependency headers. If this is not working look at
-the contents of "include.h" or "import.h", and pick the headers you need.
 
 ## Running Tests
 
@@ -101,8 +70,8 @@ Exit status 0 = PASS!
 ### Run with timeout
 
 Careful! A mulle-sde test run has already a default timeout in vibeocoding
-mode. DO NOT RUN mulle-sde test run within another `timeout`, that will not
-work well. Instead modify the timeout like this:
+mode. DO NOT RUN mulle-sde test run within another `timeout`, instead modify
+the timeout:
 
 ```
 mulle-sde test run --timeout 10 path/to/filename[.extension]
@@ -116,8 +85,6 @@ mulle-sde test [sanitizers] run <path_to_test_file>
 
 *Example: `mulle-sde test --valgrind run test/NSTableView/01_initialization.m`*
 
-Sanitizers are platform dependent. Check `mulle-test sanitizers` for a list
-of supported sanitizers.
 
 ### Run all tests
 
@@ -127,7 +94,9 @@ mulle-sde test run
 
 ### Retest everything
 
-**IT IS CRUCIAL TO TRY `RETEST` AT LEAST ONCE WHEN PROBLEMS ARISE**
+If you are working on more than one project in parallel.
+
+**IT IS CRUCIAL TO `RETEST` TO GET DEPENDENCY CHANGES**
 
 ```bash
 mulle-sde retest
@@ -155,41 +124,57 @@ cat path/to/filename.test.stdout
 cat path/to/filename.test.stderr
 ```
 
-## Creating Expected Output
-
-Once you are really sure that the test output is correct, you can conveniently
-create the .stdout file with:
 
 ```bash
 mulle-sde test run --golden-stdout <testname>
 ```
 
-## Testing Guidelines
+## Creating a Test
 
-### Test Organization
+Create a theme directory below test like `20-leak`
+
+Create `20-leak/mytest.c` in your project. Write your test code (just a normal
+C program with main()). You can write result values to stdout.
+
+### Test Structure Example
+
+In well behaved mulle project you can just "include.h" or "import.h" in your
+test and you will get all dependency headers.
+
+```c
+#include "include.h"  // use provided header for all dependency includes
+
+int   main( void)
+{
+   // 1. Setup objects and environment
+   // 2. Print descriptive output of the test steps and results
+   mulle_printf("Test description: ...\n");
+   // 3. Clean up and deallocate all objects
+   return 0;  // 0 = success, non-zero = failure
+}
+```
+
+- Tests are compiled with `-DMULLE_TEST=1`
+- Return 0 for success, anything else for failure
+- Prefer mulle_printf over printf, if available
+- **NEVER print**: times, dates, pointer addresses, error codes, anything that will vary between two test runs
+- **Output-Based Verification:** Tests verify correctness by comparing `mulle_printf` output to the corresponding `.stdout` file. Avoid using traditional assertion libraries
+- **Descriptive Output:** The `mulle_printf` output should be clear and descriptive, making it easy to understand what is being tested
+
+
+## Testing Guidelines
 
 - Each feature or major function should have its own test file
 - Test files should be organized in the `test/` directory, with subdirectories reflecting the component under test
-- Test files must be accompanied by a `.stdout` file containing the exact expected output
-- Run the tests from the project directory. Do not `cd` to any test directory
-- After a failed test, there will be an executable with a '.exe' extension besides the test source. You can run this to observe stdout and stderr better or to run the executable in a debugger
+- Test files can be accompanied by a `.stdout` file containing the exact expected output
+- Rigorously test edge cases, especially `nil` handling for all relevant parameters
+- Ensure all allocated objects are properly deallocated within the test to prevent leaks
+- Each test should be small, focused, and test one specific piece of functionality
 
-### Test Style & Philosophy
+## Creating Expected Output
 
-- **Output-Based Verification:** Tests verify correctness by comparing `mulle_printf` output to the corresponding `.stdout` file. Avoid using traditional assertion libraries
-- **Focus and Minimalism:** Each test should be small, focused, and test one specific piece of functionality
-- **Edge Cases:** Rigorously test edge cases, especially `nil` handling for all relevant parameters
-- **Memory Management:** Ensure all allocated objects are properly deallocated within the test to prevent leaks
-- **Descriptive Output:** The `mulle_printf` output should be clear and descriptive, making it easy to understand what is being tested
-- **Mutation Safety:** For any tests involving collection enumeration, include scenarios where the collection is modified during enumeration to ensure robustness
-- **NO Pointer or Date output**: The mulle_printf output must be deterministic, therefore should not contain memory addresses, dates, random values, pids etc. that are different on each run or for other users
-
-### Testing Tips and Common Pitfalls
-
-If you have problems with missing symbols, you need to get on top of **dependencies**.
-Read the `mulle-sde howto dependencies`.
-
-A NULL struct mulle_allocator * is almost always fine
+Once you are really sure that the test output is correct, you can conveniently
+create the .stdout file with:
 
 ## DON'T DO THIS - Wrong Approaches
 
@@ -197,13 +182,5 @@ A NULL struct mulle_allocator * is almost always fine
 **Problem**: Missing environment variables, wrong paths, confusing errors you can't figure out
 
 ### ❌ Do not run executables directly
-**Problem**: There is a huge danger of running stale tests, which give old results. This invariably leads to bad mental state and subsequent catastrophic decisions.
+**Problem**: There is a huge danger of running stale tests, which give old results.
 
-## Advanced Testing Topics
-
-For specialized testing scenarios, see these howtos:
-
-- **Coverage testing**: `mulle-sde howto show coverage`
-- **Debugging crashes**: `mulle-sde howto show gdb-stacktrace`
-- **Custom compiler flags**: `mulle-sde howto show test-with-cflags`
-- **CMake integration**: `mulle-sde howto show test-with-cmake`

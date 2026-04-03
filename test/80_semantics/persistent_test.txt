@@ -1,0 +1,5 @@
+This is a test file for persistent memory mapping.
+We will map this file into memory, close the file descriptor,
+and then verify we can still read the mapped memory.
+This demonstrates the fundamental behavior of mmap().
+The mapped pages remain accessible even after closing the file.

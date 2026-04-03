@@ -49,3 +49,5 @@ test*/**/*.test.*
 !/README.md
 build-*/
 PROTOTYPES_TODO.md
+.roam
+.graveyard

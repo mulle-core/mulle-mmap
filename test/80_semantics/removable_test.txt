@@ -1,0 +1,2 @@
+Test content for file removal scenario.
+This tests whether mapped memory survives file deletion.

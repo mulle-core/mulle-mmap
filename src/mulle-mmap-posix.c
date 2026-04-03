@@ -129,6 +129,11 @@ struct mulle_mmap_shared_memory   mulle_mmap_alloc_shared_memory( size_t size)
    fd = shm_open( name, O_RDWR | O_CREAT | O_EXCL, 0600);
    if( fd == -1)
       return( result);
+
+   // glibc >= 2.24 sets O_CLOEXEC on shm_open fds by default, which would
+   // close the fd on exec() before the child can use it. Clear it explicitly
+   // since this API is designed for exec-compatible IPC.
+   fcntl( fd, F_SETFD, fcntl( fd, F_GETFD) & ~FD_CLOEXEC);
    
    // Unlink immediately - object persists while fd is open
    shm_unlink( name);
@@ -176,8 +181,30 @@ int   mulle_mmap_free_shared_memory( struct mulle_mmap_shared_memory *mem)
 }
 
 
-void   *mulle_mmap_alloc_shared_pages_nowindows( size_t size)
+void   *mulle_mmap_map_shared_memory( mulle_mmap_file_t handle,
+                                      size_t size,
+                                      void *preferred_addr)
 {
+   int    fd;
+   int    flags;
+   void   *p;
+
+   if( handle == MULLE_MMAP_INVALID_HANDLE || size == 0)
+      return( NULL);
+
+   fd    = (int)(intptr_t) handle;
+   flags = MAP_SHARED;
+   if( preferred_addr)
+      flags |= MAP_FIXED;
+
+   p = mmap( preferred_addr, size, PROT_READ | PROT_WRITE, flags, fd, 0);
+   if( p == MAP_FAILED)
+      return( NULL);
+   return( p);
+}
+
+
+void   *mulle_mmap_alloc_shared_pages_nowindows( size_t size){
    void *p;
    
    if( size == 0)

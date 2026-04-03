@@ -1,11 +1,12 @@
 {
    "name" : "mulle-mmap",
-   "version" : "0.2.6",
+   "version" : "20",
    "description" : "🇧🇿 Memory mapped file access",
    "keywords" : [],
    "license" : "BSD-3-Clause",
    "repo" : "mulle-core/mulle-mmap",
    "src" : [
+      "asset/dox/TOC.md",
       "src/generic/include-private.h",
       "src/generic/include.h",
       "src/mulle-mmap-posix.c",

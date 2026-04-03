@@ -57,10 +57,14 @@ MULLE__MMAP_GLOBAL
 uint32_t   mulle_mmap_get_version( void);
 
 
+
 #ifdef _WIN32
 # ifndef WIN32_LEAN_AND_MEAN
 #  define WIN32_LEAN_AND_MEAN
 # endif // WIN32_LEAN_AND_MEAN
+# ifndef MULLE_BOOL_DEFINED
+#  error "you need to include <mulle-c11/mulle-c11-bool.h> before including <windows.h>"
+# endif
 # include <windows.h>
 #endif // ifdef _WIN32
 
@@ -322,6 +326,23 @@ struct mulle_mmap_shared_memory   mulle_mmap_alloc_shared_memory( size_t size);
 /* Free shared memory allocated with mulle_mmap_alloc_shared_memory() */
 MULLE__MMAP_GLOBAL
 int   mulle_mmap_free_shared_memory( struct mulle_mmap_shared_memory *mem);
+
+/*
+ * Map an existing shared memory region (created by another process) into
+ * this process's address space.
+ *
+ * handle          - the file mapping handle/fd from mulle_mmap_shared_memory
+ * size            - size of the mapping
+ * preferred_addr  - desired virtual address (pass the parent's .address for
+ *                   fixed-address mapping so dlmalloc internal pointers remain
+ *                   valid). NULL lets the OS choose (unsafe for dlmalloc use).
+ *
+ * Returns the mapped address, or NULL on failure.
+ */
+MULLE__MMAP_GLOBAL
+void   *mulle_mmap_map_shared_memory( mulle_mmap_file_t handle,
+                                      size_t size,
+                                      void *preferred_addr);
 
 
 #ifndef _WIN32
