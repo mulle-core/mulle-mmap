@@ -1,6 +1,6 @@
 === Shared Page Allocation Tests ===
 
-These tests verify mulle_mmap_alloc_shared_pages() functionality:
+These tests verify mulle_mmap_alloc_shared_memory() functionality:
 1. Basic shared page allocation and deallocation
 2. Shared memory between parent and child processes
 3. Multiple shared page allocation
@@ -31,7 +31,7 @@ Phase 2: Launching child process
   CHILD: Exiting
 === Shared Page Allocation Tests ===
 
-These tests verify mulle_mmap_alloc_shared_pages() functionality:
+These tests verify mulle_mmap_alloc_shared_memory() functionality:
 1. Basic shared page allocation and deallocation
 2. Shared memory between parent and child processes
 3. Multiple shared page allocation

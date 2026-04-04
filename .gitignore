@@ -51,3 +51,4 @@ build-*/
 PROTOTYPES_TODO.md
 .roam
 .graveyard
+*.tmp.*
