@@ -1,5 +1,5 @@
 # mulle-mmap Library Documentation for AI
-<!-- Keywords: memory, mmap, pages, shared, filemapping -->
+<!-- Keywords: mmap, memory, filemap, shared, pages, crossplatform, C -->
 ## 1. Introduction & Purpose
 
 - mulle-mmap is a small cross-platform C library for memory-mapped files and page-level OS memory allocation.

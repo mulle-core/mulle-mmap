@@ -1,6 +1,6 @@
 {
    "name" : "mulle-mmap",
-   "version" : "20",
+   "version" : "1.0.0",
    "description" : "🇧🇿 Memory mapped file access",
    "keywords" : [],
    "license" : "BSD-3-Clause",
