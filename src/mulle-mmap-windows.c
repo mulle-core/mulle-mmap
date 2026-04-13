@@ -204,18 +204,24 @@ void   *mulle_mmap_map_shared_memory( mulle_mmap_file_t handle,
 // Unix-only functions - not available on Windows
 void   *mulle_mmap_alloc_shared_pages_nowindows( size_t size)
 {
+   MULLE_C_UNUSED( size);
+
    errno = ENOSYS;  // Function not implemented
    return( NULL);
 }
 
 void   mulle_mmap_free_shared_pages_nowindows( void *address, size_t size)
 {
+   MULLE_C_UNUSED( address);
+   MULLE_C_UNUSED( size);
    // No-op on Windows
 }
 
 
 int   _mulle_mmap_free_pages( void *p, size_t size)
 {
+   MULLE_C_UNUSED( size);
+
    // Try UnmapViewOfFile first (for shared pages from MapViewOfFile)
    if( UnmapViewOfFile( p))
       return( 0);
@@ -243,7 +249,8 @@ size_t   mulle_mmap_get_system_pagesize( void)
    return( SystemInfo.dwAllocationGranularity);
 }
 
-mulle_mmap_file_t   mulle_mmap_file_open( char *path, enum mulle_mmap_accessmode mode)
+mulle_mmap_file_t   mulle_mmap_file_open( char *path,
+                                          enum mulle_mmap_accessmode mode)
 {
    return( CreateFileA( path,
                        mode == mulle_mmap_read ? GENERIC_READ : (GENERIC_READ | GENERIC_WRITE),
