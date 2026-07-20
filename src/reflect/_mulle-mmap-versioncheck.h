@@ -7,7 +7,7 @@
 
 #if defined( MULLE__ALLOCATOR_VERSION)
 # ifndef MULLE__ALLOCATOR_VERSION_MIN
-#  define MULLE__ALLOCATOR_VERSION_MIN  ((8UL << 20) | (0 << 8) | 0)
+#  define MULLE__ALLOCATOR_VERSION_MIN  ((8UL << 20) | (0 << 8) | 1)
 # endif
 # ifndef MULLE__ALLOCATOR_VERSION_MAX
 #  define MULLE__ALLOCATOR_VERSION_MAX  ((9UL << 20) | (0 << 8) | 0)

@@ -52,3 +52,5 @@ PROTOTYPES_TODO.md
 .roam
 .graveyard
 *.tmp.*
+*.test.*
+.idea
