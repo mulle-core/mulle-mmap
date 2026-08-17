@@ -243,7 +243,7 @@ size_t   mulle_mmap_get_system_pagesize( void)
 mulle_mmap_file_t   mulle_mmap_file_open( char *path, 
                                           enum mulle_mmap_accessmode mode)
 {
-   return( open( path, mode == mulle_mmap_read ? O_RDONLY : O_RDWR));
+   return( open( path, (mode & mulle_mmap_write) ? O_RDWR : O_RDONLY));
 }
 
 int64_t   mulle_mmap_file_query_size( mulle_mmap_file_t handle)
@@ -280,7 +280,7 @@ int   mulle_mmap_memory_map( mulle_mmap_file_t handle,
    mapping_start = (char *) mmap(
             0, // Don't give hint as to where to map.
             length_to_map,
-            mode == mulle_mmap_read ? PROT_READ : PROT_WRITE,
+            (mode & mulle_mmap_write) ? (PROT_READ | PROT_WRITE) : PROT_READ,
             MAP_SHARED,
             handle,
             aligned_offset);

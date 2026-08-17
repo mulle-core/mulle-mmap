@@ -119,7 +119,7 @@ int    _mulle_mmap_map_range( struct mulle_mmap *p,
 
 int   _mulle_mmap_conditional_sync( struct mulle_mmap *p)
 {
-   if( p->accessmode_ == mulle_mmap_read)
+   if( ! (p->accessmode_ & mulle_mmap_write))
       return( 0);
    return( _mulle_mmap_sync( p));
 }

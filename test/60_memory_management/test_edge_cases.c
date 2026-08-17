@@ -210,7 +210,7 @@ static void test_very_large_allocation( void)
    
    if( pages == NULL)
    {
-      printf( "  GOOD: Very large allocation rejected (errno: %s)\n", strerror( errno));
+      printf( "  GOOD: Very large allocation rejected\n");
       printf( "  System correctly enforced resource limits\n");
    }
    else

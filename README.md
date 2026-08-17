@@ -46,7 +46,7 @@ if (pages) {
 
 ```c
 // Allocate shared memory (useful for inter-process communication)
-void *shared = mulle_mmap_alloc_shared_pages(page_size);
+void *shared = mulle_mmap_alloc_shared_pages_nowindows(page_size);
 
 if (shared) {
     // This memory can be shared between parent and child processes
@@ -58,7 +58,7 @@ if (shared) {
         exit(0);
     }
     
-    mulle_mmap_free_pages(shared, page_size);
+    mulle_mmap_free_shared_pages_nowindows(shared, page_size);
 }
 ```
 
@@ -173,29 +173,40 @@ if( mulle_mmap_map_file_range(&info, "large_file.dat", 1024, 4096) == 0)
 
 ## Add
 
-**This project is a component of the [mulle-core](//github.com/mulle-core/mulle-core) library. As such you usually will *not* add or install it
-individually, unless you specifically do not want to link against
-`mulle-core`.**
+mulle-mmap is a component of the [mulle-core](//github.com/mulle-core/mulle-core) library. So in your code include the mulle-core umbrella header:
 
-
-### Add as an individual component
-
-Use [mulle-sde](//github.com/mulle-sde) to add mulle-mmap to your project:
-
-``` sh
-mulle-sde add github:mulle-core/mulle-mmap
+``` c
+#include <mulle-core/mulle-core.h>
 ```
 
-To only add the sources of mulle-mmap with dependency
-sources use [clib](https://github.com/clibs/clib):
+### Add mulle-core to a cmake and git project
 
-
-``` sh
-clib install --out src/mulle-core mulle-core/mulle-mmap
+``` bash
+git submodule add https://github.com/mulle-core/mulle-core.git mulle-core
 ```
 
-Add `-isystem src/mulle-core` to your `CFLAGS` and compile all the sources that were downloaded with your project.
+Add this to your `CMakeLists.txt`:
 
+``` cmake
+add_subdirectory( mulle-core)
+target_link_libraries( ${PROJECT_NAME} PRIVATE mulle-core)
+```
+
+
+### Add mulle-core to a mulle-sde project
+
+``` sh
+mulle-sde add github:mulle-core/mulle-core
+```
+
+### Embed mulle-mmap with clib
+
+``` sh
+clib install --out src mulle-core/mulle-mmap
+```
+
+Append `src` to your include path (e.g. add `-isystem src`  to your `CFLAGS`)
+and compile all the sources that were downloaded.
 
 ## Install
 

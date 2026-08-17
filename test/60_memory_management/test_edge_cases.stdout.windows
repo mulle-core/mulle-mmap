@@ -55,7 +55,7 @@ Test completed
 
 Phase 1: Attempting to allocate very large size
   Requesting: 9223372036854775807 bytes (SIZE_MAX/2)
-  GOOD: Very large allocation rejected (errno: Success)
+  GOOD: Very large allocation rejected
   System correctly enforced resource limits
 Test completed
 

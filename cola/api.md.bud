@@ -22,7 +22,7 @@ if (pages) {
 
 ```c
 // Allocate shared memory (useful for inter-process communication)
-void *shared = mulle_mmap_alloc_shared_pages(page_size);
+void *shared = mulle_mmap_alloc_shared_pages_nowindows(page_size);
 
 if (shared) {
     // This memory can be shared between parent and child processes
@@ -34,7 +34,7 @@ if (shared) {
         exit(0);
     }
     
-    mulle_mmap_free_pages(shared, page_size);
+    mulle_mmap_free_shared_pages_nowindows(shared, page_size);
 }
 ```
 

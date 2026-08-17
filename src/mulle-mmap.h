@@ -413,7 +413,7 @@ static inline int   mulle_mmap_is_empty( struct mulle_mmap *p)
 
 static inline int   _mulle_mmap_is_writable( struct mulle_mmap *p)
 {
-   return( p->accessmode_ == mulle_mmap_write);
+   return( p->accessmode_ & mulle_mmap_write);
 }
 
 static inline int   mulle_mmap_is_writable( struct mulle_mmap *p)
@@ -539,6 +539,18 @@ static inline int   mulle_mmap_map_file( struct mulle_mmap *p,
       return( 0);
 
    return( _mulle_mmap_map_file( p, path));
+}
+
+
+static inline int   mulle_mmap_map_file_range( struct mulle_mmap *p,
+                                               char *path,
+                                               size_t offset,
+                                               size_t length)
+{
+   if( ! p)
+      return( 0);
+
+   return( _mulle_mmap_map_file_range( p, path, offset, length));
 }
 
 

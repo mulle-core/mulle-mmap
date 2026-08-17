@@ -82,7 +82,10 @@ int main( int argc, char *argv[])
 #else
    printf( "\nStep 2: Fork child FIRST\n");
    {
-      pid_t pid = fork();
+      pid_t pid;
+      
+      fflush( stdout);
+      pid = fork();
       
       if( pid == 0)
       {

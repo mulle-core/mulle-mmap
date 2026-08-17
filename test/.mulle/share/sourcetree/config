@@ -1,1 +1,1 @@
-mulle-mmap;${MULLE__MMAP_NODETYPE:-tar};;3ABD9C83-9E94-44E6-A9EB-B5AF4EE2A142;${MULLE__MMAP_URL:-https://github.com/mulle-kybernetik-tv/mulle-mmap/archive/${MULLE_TAG}.tar.gz};${MULLE__MMAP_BRANCH};${MULLE__MMAP_TAG:-latest};;
+mulle-mmap;${MULLE__MMAP_NODETYPE:-tar};;6A898DDA-B064-4A44-8B98-AA9437157126;${MULLE__MMAP_URL:-https://github.com/nat/mulle-mmap/archive/${MULLE_TAG}.tar.gz};${MULLE__MMAP_BRANCH};${MULLE__MMAP_TAG:-latest};;

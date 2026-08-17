@@ -257,7 +257,7 @@ mulle_mmap_file_t   mulle_mmap_file_open( char *path,
                                           enum mulle_mmap_accessmode mode)
 {
    return( CreateFileA( path,
-                       mode == mulle_mmap_read ? GENERIC_READ : (GENERIC_READ | GENERIC_WRITE),
+                       (mode & mulle_mmap_write) ? (GENERIC_READ | GENERIC_WRITE) : GENERIC_READ,
                        FILE_SHARE_READ | FILE_SHARE_WRITE,
                        0,
                        OPEN_EXISTING,
@@ -304,7 +304,7 @@ int   mulle_mmap_memory_map( mulle_mmap_file_t handle,
            handle,
            0,
            SEC_RESERVE | /* added https://devblogs.microsoft.com/oldnewthing/20150130-00/?p=44793) */
-              (mode == mulle_mmap_read ? PAGE_READONLY : PAGE_READWRITE),
+              ((mode & mulle_mmap_write) ? PAGE_READWRITE : PAGE_READONLY),
            (SIZE_T) mulle_mmap_int64_high( max_file_size),
            (SIZE_T) mulle_mmap_int64_low( max_file_size),
            0);
@@ -313,12 +313,15 @@ int   mulle_mmap_memory_map( mulle_mmap_file_t handle,
 
    mapping_start = (char *) MapViewOfFile(
            file_mapping_handle,
-           mode == mulle_mmap_read ? FILE_MAP_READ : FILE_MAP_WRITE,
+           (mode & mulle_mmap_write) ? FILE_MAP_WRITE : FILE_MAP_READ,
            (SIZE_T) mulle_mmap_int64_high( aligned_offset),
            (SIZE_T) mulle_mmap_int64_low( aligned_offset),
            (SIZE_T) length_to_map);
    if( mapping_start == NULL)
-      return( 1);
+   {
+      CloseHandle( file_mapping_handle);
+      return( -1);
+   }
 
    ctx->file_mapping_handle = file_mapping_handle;
    ctx->data                = mapping_start + offset - aligned_offset;
