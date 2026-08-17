@@ -230,7 +230,7 @@ size_t   mulle_mmap_get_system_pagesize( void);
 
 // File operations - platform specific implementations  
 MULLE__MMAP_GLOBAL
-mulle_mmap_file_t   mulle_mmap_file_open( char *path,
+mulle_mmap_file_t   mulle_mmap_file_open( const char *path,
                                           enum mulle_mmap_accessmode mode);
 
 MULLE__MMAP_GLOBAL
@@ -509,7 +509,7 @@ static inline void   *mulle_mmap_get_bytes( struct mulle_mmap *p)
  */
 MULLE__MMAP_GLOBAL
 int    _mulle_mmap_map_file_range( struct mulle_mmap *p,
-                                   char *path,
+                                   const char *path,
                                    size_t offset,
                                    size_t length);
 
@@ -526,14 +526,14 @@ int    _mulle_mmap_map_file_range( struct mulle_mmap *p,
  * The entire file is mapped.
  */
 static inline int   _mulle_mmap_map_file( struct mulle_mmap *p,
-                                          char *path)
+                                          const char *path)
 {
    return( _mulle_mmap_map_file_range( p, path, 0, (size_t) -1));
 }
 
 
 static inline int   mulle_mmap_map_file( struct mulle_mmap *p,
-                                         char *path)
+                                         const char *path)
 {
    if( ! p)
       return( 0);
@@ -543,7 +543,7 @@ static inline int   mulle_mmap_map_file( struct mulle_mmap *p,
 
 
 static inline int   mulle_mmap_map_file_range( struct mulle_mmap *p,
-                                               char *path,
+                                               const char *path,
                                                size_t offset,
                                                size_t length)
 {

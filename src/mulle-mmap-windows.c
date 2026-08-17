@@ -253,7 +253,7 @@ size_t   mulle_mmap_get_system_pagesize( void)
    return( SystemInfo.dwAllocationGranularity);
 }
 
-mulle_mmap_file_t   mulle_mmap_file_open( char *path,
+mulle_mmap_file_t   mulle_mmap_file_open( const char *path,
                                           enum mulle_mmap_accessmode mode)
 {
    return( CreateFileA( path,

@@ -48,7 +48,7 @@ void  _mulle_mmap_done( struct mulle_mmap *p)
 
 
 int   _mulle_mmap_map_file_range( struct mulle_mmap *p,
-                                  char *path,
+                                  const char *path,
                                   size_t offset,
                                   size_t length)
 {
