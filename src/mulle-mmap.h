@@ -32,7 +32,7 @@
 #include <string.h>
 
 
-#define MULLE__MMAP_VERSION  ((1UL << 20) | (0 << 8) | 1)
+#define MULLE__MMAP_VERSION  ((1UL << 20) | (1 << 8) | 0)
 
 
 static inline unsigned int   mulle_mmap_get_version_major( void)
