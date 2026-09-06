@@ -4,15 +4,16 @@
 
 - mulle-mmap is a small cross-platform C library for memory-mapped files and page-level OS memory allocation.
 - Solves efficient file I/O and OS page allocation needs by exposing simple mapping and page APIs that wrap POSIX mmap/munmap and Windows CreateFileMapping/MapViewOfFile.
-- Key features: page allocation (zero-filled), shared-memory pages for IPC, file mapping (whole file or ranges), safe wrappers and platform-specific handles.
+- Key features: page allocation (zero-filled), shared-memory pages for IPC (including Android via syscall fallback), file mapping (whole file or ranges), safe wrappers and platform-specific handles. Current version 1.1.0.
 - Component of mulle-core; depends on mulle-allocator / mulle-c11 primitives via project reflect headers.
 
 ## 2. Key Concepts & Design Philosophy
 
 - Thin, explicit mapping abstraction: struct mulle_mmap holds mapping metadata (data pointer, lengths, accessmode, handles).
-- Separate platform implementations (posix/windows) keep public API stable; use accessmode flags for read vs write.
+- Separate platform implementations (posix/windows) keep public API stable; access modes are flag-combinable bitmasks (bit-test with `&`, combine with `|`) for read/write selection.
 - Emphasizes explicit lifecycle: init -> map -> use -> conditional_sync/unmap -> done.
 - Provides both high-level safe inline wrappers and low-level platform-specific functions when needed.
+- Path parameters are `const char *` (input-only, never mutated).
 
 ## 3. Core API & Data Structures
 
@@ -45,28 +46,39 @@ This section is organized by the primary public header: mulle-mmap.h
   - _mulle_mmap_init(struct *p, accessmode)  or mulle_mmap_init() safe wrapper
   - _mulle_mmap_done(struct *p)  or mulle_mmap_done() safe wrapper
 - Core operations:
-  - _mulle_mmap_map_file_range(struct *p, path, offset, length) -> int
-  - _mulle_mmap_map_file(struct *p, path) -> maps whole file (inline wrapper provided)
-  - _mulle_mmap_map_range(struct *p, handle, offset, length) -> int
+  - _mulle_mmap_map_file_range(struct *p, const char *path, size_t offset, size_t length) -> int (0 on success, -1 on failure; state unchanged on failure)
+  - mulle_mmap_map_file_range(struct *p, const char *path, size_t offset, size_t length) -> int (NEW public safe inline wrapper; returns 0 if p == NULL)
+  - _mulle_mmap_map_file(struct *p, const char *path) -> maps whole file (inline wrapper: _mulle_mmap_map_file_range with offset 0, length (size_t)-1)
+  - mulle_mmap_map_file(struct *p, const char *path) -> int safe wrapper (returns 0 if p == NULL)
+  - _mulle_mmap_map_range(struct *p, mulle_mmap_file_t handle, offset, length) -> int
   - _mulle_mmap_map(struct *p, handle) -> maps whole handle (inline)
+  - mulle_mmap_map_range / mulle_mmap_map -> int safe wrappers (return 0 for NULL p, -1 for mulle_mmap_map NULL)
   - _mulle_mmap_unmap/_mulle_mmap_sync (low-level) and safe wrappers mulle_mmap_unmap/mulle_mmap_sync
+  - _mulle_mmap_conditional_sync -> int (syncs only when accessmode has mulle_mmap_write flag bit set)
 - Inspection functions:
   - mulle_mmap_get_bytes(struct *p) -> void* (pointer to mapped bytes)
   - mulle_mmap_get_length(struct *p) -> size_t (logical length)
   - mulle_mmap_get_mapped_length(struct *p) -> size_t (OS-mapped length)
   - mulle_mmap_get_mapping_offset(struct *p) -> size_t (mapped_length - length)
-  - mulle_mmap_is_open, mulle_mmap_is_mapped, mulle_mmap_is_empty, mulle_mmap_is_writable
+  - mulle_mmap_is_open, mulle_mmap_is_mapped, mulle_mmap_is_empty, mulle_mmap_is_writable (bit-tests accessmode with `&`)
 - Notes: equality helper mulle_mmap_equal(p,q) compares mode, pointer and length.
 
 #### Enum mulle_mmap_accessmode
-- mulle_mmap_read  : read-only mapping
-- mulle_mmap_write : read-write mapping
-- mulle_mmap_no_unmap : flag to avoid unmapping when done (advanced use)
+- Flag-combinable bitmask (since 1.1.0): combine with `|`, test with `&`; writability is checked as `accessmode_ & mulle_mmap_write`.
+- mulle_mmap_read  = 0 : read-only mapping (also the default bit value)
+- mulle_mmap_write = 1 : read-write mapping; select read/write via `mode & mulle_mmap_write`
+- mulle_mmap_no_unmap = 0x80 : flag to allow combining with read/write via `|`; keeps pages mapped when done (advanced use, e.g. mulle_mmap_read | mulle_mmap_no_unmap)
 
 #### Page allocation helpers
-- mulle_mmap_get_system_pagesize() -> size_t
 - mulle_mmap_alloc_pages(size_t size) -> void* (pages are guaranteed zero-filled)
-- mulle_mmap_free_pages(void *p, size_t size) -> int (safe inline wrapper: mulle_mmap_free_pages)
+- mulle_mmap_free_pages(void *p, size_t size) -> int (safe inline wrapper returns 0 if p == NULL)
+- _mulle_mmap_free_pages(void *p, size_t size) -> int (low-level, MULLE_C_NONNULL_FIRST)
+
+#### Platform / file-level API
+- mulle_mmap_file_open( const char *path, enum mulle_mmap_accessmode mode) -> mulle_mmap_file_t (uses `mode & mulle_mmap_write` to pick O_RDWR/GENERIC_READ|GENERIC_WRITE vs read-only)
+- mulle_mmap_file_query_size( mulle_mmap_file_t handle) -> int64_t
+- mulle_mmap_memory_map( handle, int64_t offset, int64_t length, mode, struct mulle_mmap_result *ctx) -> int (Windows now closes the file-mapping handle and returns -1 when MapViewOfFile fails)
+- mulle_mmap_get_system_pagesize() -> size_t
 
 #### Shared pages (fast unix variant)
 - mulle_mmap_alloc_shared_pages_nowindows(size) -> void* (UNIX only, faster, fork-only)
@@ -84,9 +96,12 @@ This section is organized by the primary public header: mulle-mmap.h
 ## 5. AI Usage Recommendations & Patterns
 
 - Always use _mulle_mmap_init / mulle_mmap_init before mapping and _mulle_mmap_done / mulle_mmap_done to clean up.
-- For simple mapping, use the safe inline wrappers (mulle_mmap_map_file, mulle_mmap_map_range, unmap/sync inline wrappers).
+- For simple mapping, use the safe inline wrappers (mulle_mmap_map_file, mulle_mmap_map_file_range, mulle_mmap_map_range, mulle_mmap_unmap, mulle_mmap_sync); they are NULL-safe and preferred over the `_`-prefixed low-level variants.
+- To map a specific byte range of a file, use mulle_mmap_map_file_range(p, path, offset, length); pass length = (size_t)-1 to map to end of file, offset need not be page-aligned.
+- Access modes are flags: test writability with `(mode & mulle_mmap_write)` and combine e.g. mulle_mmap_write | mulle_mmap_no_unmap. Do not compare with `==` for flags.
 - When mapping for child processes, preserve the shared memory handle (Windows) until after CreateProcess.
-- Prefer mule_mmap_no_unmap only when you intentionally want to keep pages alive after done() (advanced).
+- On Android, shared-memory allocation transparently uses Linux syscalls (shm_open/shm_unlink absent from public libc headers); no API change.
+- Prefer mulle_mmap_no_unmap only when you intentionally want to keep pages alive after done() (advanced).
 - Do not access internal fields (underscore-prefixed) directly unless you need low-level behavior.
 - Be aware: mulle_mmap_alloc_pages returns zero-filled memory; free with mulle_mmap_free_pages(p,size).
 
@@ -94,6 +109,7 @@ Common pitfalls
 - Forgetting to call done/unmap may keep handles open or mapped regions alive during process lifetime.
 - Closing Windows mapping handle before spawning child makes inheritance impossible.
 - Expect mapped_length != length when offset or OS alignment causes expansion; use get_mapping_offset to compute user-visible data start.
+- Pass const-qualified strings to path parameters; the library never mutates the path.
 
 ## 6. Integration Examples
 
@@ -162,7 +178,10 @@ void example_map_range( void)
 
 ## 7. Dependencies
 
-- mulle-c11
+Direct `mulle-sde` dependency (from `.mulle/etc/sourcetree/config` and reflect headers):
+- `mulle-allocator` (requires ≥ 8.1.0, < 9.0.0)
+
+Transitively, `mulle-allocator` brings in `mulle-c11` primitives (types, macros, MULLE_C_NONNULL_FIRST, MULLE_C_GLOBAL).
 
 ---
 
